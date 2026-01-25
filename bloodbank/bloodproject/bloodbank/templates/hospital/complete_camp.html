@@ -1,0 +1,12 @@
+<h2>Complete Blood Camp: {{ camp.camp_name }}</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <label>Donors Count:</label>
+    <input type="number" name="donors_count" value="{{ camp.donors_count|default_if_none:'' }}" required><br><br>
+
+    <label>Units Collected:</label>
+    <input type="number" name="units_collected" value="{{ camp.units_collected|default_if_none:'' }}" required><br><br>
+
+    <button type="submit">Mark as Completed</button>
+</form>

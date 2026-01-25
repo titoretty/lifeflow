@@ -1,0 +1,515 @@
+{% extends 'hospital_header.html' %}
+{% block content %}
+
+<style>
+/* Blood Bank Theme - Red & White */
+:root {
+    --primary-red: #e74c3c;
+    --light-red: #f8d7da;
+    --dark-red: #a93226;
+    --white: #ffffff;
+    --light-gray: #f8f9fa;
+    --text-dark: #2c3e50;
+}
+
+body {
+    background-color: #f5f7fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header Section */
+.header-section {
+    background: linear-gradient(135deg, var(--primary-red), var(--dark-red));
+    color: var(--white);
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.header-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 300px;
+    background: url('https://picsum.photos/seed/blooddrop/300/300.jpg') no-repeat;
+    background-size: cover;
+    opacity: 0.2;
+    border-radius: 50%;
+    transform: translate(50%, -50%);
+}
+
+.header-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-content h2 {
+    font-size: 28px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.header-content h2::before {
+    content: "🩸";
+    margin-right: 15px;
+    font-size: 32px;
+}
+
+.header-stats {
+    display: flex;
+    gap: 30px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.stat-label {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Main Content Layout */
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 30px;
+}
+
+/* Table Section */
+.table-section {
+    background: var(--white);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.table-header {
+    background: var(--light-red);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-header h3 {
+    margin: 0;
+    color: var(--dark-red);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+}
+
+.table-header h3::before {
+    content: "📋";
+    margin-right: 10px;
+}
+
+.request-count {
+    background: var(--primary-red);
+    color: var(--white);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+/* Table Styling */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: var(--light-gray);
+    color: var(--text-dark);
+    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover {
+    background-color: rgba(231, 76, 60, 0.05);
+}
+
+/* Blood Group Badge */
+.blood-group {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: var(--primary-red);
+    color: var(--white);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+/* Action Buttons */
+.btn {
+    display: inline-block;
+    padding: 8px 15px;
+    margin-right: 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-approve {
+    background: #28a745;
+    color: var(--white);
+}
+
+.btn-approve:hover {
+    background: #218838;
+    transform: translateY(-2px);
+}
+
+.btn-reject {
+    background: #dc3545;
+    color: var(--white);
+}
+
+.btn-reject:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+/* Side Panel */
+.side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Info Cards */
+.info-card {
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.info-card-header {
+    background: var(--primary-red);
+    color: var(--white);
+    padding: 15px;
+    font-weight: 600;
+}
+
+.info-card-body {
+    padding: 20px;
+}
+
+/* Blood Donation Facts */
+.fact-list {
+    list-style: none;
+    padding: 0;
+}
+
+.fact-list li {
+    margin-bottom: 12px;
+    padding-left: 25px;
+    position: relative;
+}
+
+.fact-list li::before {
+    content: "❤️";
+    position: absolute;
+    left: 0;
+}
+
+/* Donation Process */
+.process-steps {
+    counter-reset: step;
+}
+
+.process-step {
+    margin-bottom: 15px;
+    padding-left: 40px;
+    position: relative;
+}
+
+.process-step::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    background: var(--primary-red);
+    color: var(--white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.process-step h4 {
+    margin: 0 0 5px 0;
+    color: var(--primary-red);
+}
+
+.process-step p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+/* Image Card */
+.image-card {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.image-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: var(--white);
+}
+
+.image-overlay h4 {
+    margin: 0 0 5px 0;
+}
+
+.image-overlay p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Note Section */
+.note-section {
+    background: var(--light-red);
+    border-left: 4px solid var(--primary-red);
+    padding: 15px;
+    border-radius: 0 5px 5px 0;
+    margin-top: 20px;
+}
+
+.note-section h4 {
+    margin: 0 0 10px 0;
+    color: var(--dark-red);
+    display: flex;
+    align-items: center;
+}
+
+.note-section h4::before {
+    content: "📝";
+    margin-right: 10px;
+}
+
+.note-section p {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+
+    .side-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .header-stats {
+        margin-top: 20px;
+    }
+
+    .side-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .table-container {
+        overflow-x: scroll;
+    }
+}
+</style>
+
+<div class="container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="header-content">
+            <h2>{{ hospital.hospital_name }} - Pending Blood Requests</h2>
+            <div class="header-stats">
+                <div class="stat-item">
+                    <div class="stat-value">{{ pending_requests|length }}</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Service</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <!-- Table Section -->
+        <div class="table-section">
+            <div class="table-header">
+                <h3>Blood Donation Requests</h3>
+                <div class="request-count">{{ pending_requests|length }} Requests</div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Blood Group</th>
+                        <th>Date</th>
+                        <th>Weight</th>
+                        <th>Actions</th>
+                    </tr>
+                    {% for d in pending_requests %}
+                    <tr>
+                        <td>{{ d.user_name }}</td>
+                        <td><span class="blood-group">{{ d.blood_group }}</span></td>
+                        <td>{{ d.donation_date }}</td>
+                        <td>{{ d.weight }} kg</td>
+                        <td>
+                            <a href="{% url 'approve_request' d.id %}" class="btn btn-approve">Approve</a>
+                            <a href="{% url 'reject_request' d.id %}" class="btn btn-reject">Reject</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📭</div>
+                                <p>No pending requests.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <!-- Note Section -->
+            <div class="note-section">
+                <h4>Important Note</h4>
+                <p>Each blood donation can help save up to three lives. Please review all requests carefully and ensure donors meet all health requirements before approval.</p>
+            </div>
+        </div>
+
+        <!-- Side Panel -->
+        <div class="side-panel">
+            <!-- Blood Donation Facts -->
+            <div class="info-card">
+                <div class="info-card-header">Blood Donation Facts</div>
+                <div class="info-card-body">
+                    <ul class="fact-list">
+                        <li>One donation can save up to 3 lives</li>
+                        <li>Every 2 seconds someone needs blood</li>
+                        <li>O- is the universal donor blood type</li>
+                        <li>The average adult has 10 pints of blood</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Image Card -->
+            <div class="info-card image-card">
+                <img src="https://picsum.photos/seed/blooddonation/350/200.jpg" alt="Blood Donation">
+                <div class="image-overlay">
+                    <h4>Be a Hero</h4>
+                    <p>Your donation can make a difference</p>
+                </div>
+            </div>
+
+            <!-- Donation Process -->
+            <div class="info-card">
+                <div class="info-card-header">Donation Process</div>
+                <div class="info-card-body">
+                    <div class="process-steps">
+                        <div class="process-step">
+                            <h4>Registration</h4>
+                            <p>Donor fills out registration form</p>
+                        </div>
+                        <div class="process-step">
+                            <h4>Health Check</h4>
+                            <p>Basic health screening performed</p>
+                        </div>
+                        <div class="process-step">
+                            <h4>Donation</h4>
+                            <p>Actual blood collection process</p>
+                        </div>
+                        <div class="process-step">
+                            <h4>Refreshment</h4>
+                            <p>Donor receives refreshments</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

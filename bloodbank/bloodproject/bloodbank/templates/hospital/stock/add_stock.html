@@ -1,0 +1,26 @@
+{% extends 'hospital/hos_index.html' %}
+{% block content %}
+
+<h2>➕ Add Blood Stock</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <label>Blood Group</label>
+    <select name="blood_group" required>
+        {% for bg, name in blood_groups %}
+        <option value="{{ bg }}">{{ bg }}</option>
+        {% endfor %}
+    </select>
+
+    <br><br>
+
+    <label>Units</label>
+    <input type="number" name="units" min="1" required>
+
+    <br><br>
+
+    <button type="submit">Add Stock</button>
+</form>
+
+{% endblock %}

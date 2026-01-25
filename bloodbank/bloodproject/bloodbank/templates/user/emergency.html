@@ -1,0 +1,183 @@
+{% extends 'header.html' %}
+{% block title %}Emergency Blood Donors | LifeFlow{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+
+    <!-- Title -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-danger">🚨 Emergency Blood Donor Search</h2>
+        <p class="text-muted">
+            Find available donors in Kerala and send urgent requests
+        </p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Search Form -->
+    <div class="card shadow-sm mb-5">
+        <div class="card-body">
+            <form method="GET" class="row g-3 justify-content-center">
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Blood Group</label>
+                    <select name="blood_group" class="form-select">
+                        <option value="">-- All Blood Groups --</option>
+                        {% for bg in blood_groups %}
+                        <option value="{{ bg }}" {% if selected_group == bg %}selected{% endif %}>
+                            {{ bg }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">District</label>
+                    <select name="district" class="form-select">
+                        <option value="">-- All Districts --</option>
+                        {% for dist in districts %}
+                        <option value="{{ dist }}" {% if selected_district == dist %}selected{% endif %}>
+                            {{ dist }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Donor List -->
+    <h4 class="mb-3">
+        <i class="fas fa-users text-danger"></i> Available Donors
+        {% if donors %}<small class="text-muted">({{ donors|length }})</small>{% endif %}
+    </h4>
+
+    {% if donors %}
+    <div class="row">
+
+        {% for donor in donors %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+
+                <div class="card-body d-flex flex-column">
+
+                    <!-- Name + Eligibility -->
+                    <h5 class="fw-bold mb-2">
+                        {{ donor.user.full_name }}
+
+                        {% if donor.is_valid %}
+                            <span class="badge bg-success ms-2">Eligible</span>
+                        {% else %}
+                            <span class="badge bg-danger ms-2">Not Eligible</span>
+                        {% endif %}
+                    </h5>
+
+                    <!-- Blood Group -->
+                    <p class="mb-2">
+                        <strong>Blood Group:</strong>
+                        <span class="badge bg-secondary">{{ donor.blood_group }}</span>
+                    </p>
+
+                    <!-- District -->
+                    <p class="mb-2">
+                        <strong>District:</strong> {{ donor.district }}
+                    </p>
+
+                    <!-- Last Donation -->
+                    {% if donor.user.last_donation_date %}
+                    <p class="mb-2 text-muted small">
+                        Last donated:
+                        {{ donor.user.last_donation_date|date:"d M Y" }}
+                    </p>
+                    {% endif %}
+
+                    {% if not donor.is_valid %}
+                    <p class="text-danger small mb-3">
+                        Eligible after 90 days from last donation
+                    </p>
+                    {% endif %}
+
+                    <!-- Request Form -->
+                    <form method="POST"
+                          action="{% url 'send_emergency_request' donor.user.id %}"
+                          class="mt-auto">
+
+                        {% csrf_token %}
+
+                        {% if donor.is_valid %}
+                        <div class="mb-2">
+                            <input type="text" name="name"
+                                   class="form-control form-control-sm"
+                                   placeholder="Your full name *" required>
+                        </div>
+
+                        <div class="mb-2">
+                            <input type="email" name="email"
+                                   class="form-control form-control-sm"
+                                   placeholder="Your email *" required>
+                        </div>
+
+                        <div class="mb-2">
+                            <input type="tel" name="phone"
+                                   class="form-control form-control-sm"
+                                   placeholder="Your phone (optional)">
+                        </div>
+
+                        <div class="mb-3">
+                            <textarea name="message"
+                                      class="form-control form-control-sm"
+                                      rows="2"
+                                      placeholder="Brief message (hospital, patient condition)"></textarea>
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-outline-danger btn-sm w-100"
+                                onclick="return confirm('Send emergency request to {{ donor.user.full_name }}?');">
+                            <i class="fas fa-envelope"></i> Send Emergency Request
+                        </button>
+
+                        {% else %}
+                        <button class="btn btn-secondary btn-sm w-100" disabled>
+                            <i class="fas fa-ban"></i> Not Eligible to Donate
+                        </button>
+                        {% endif %}
+
+                    </form>
+
+                    <div class="alert alert-info small mt-3 mb-0">
+                        <strong>Privacy:</strong> Phone number is hidden.<br>
+                        Only notification is sent.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center py-4">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        No donors found matching your criteria.
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

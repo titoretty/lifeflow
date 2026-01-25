@@ -1,0 +1,166 @@
+{% extends 'header.html' %}
+{% load static %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assets/css/request_blood_popup.css' %}">
+{% endblock %}
+{% block content %}
+
+
+<div class="popup-overlay">
+    <div class="popup-card">
+
+        <div class="popup-header">
+            <h3>🩸 Blood Request</h3>
+            <a href="{% url 'hospital_list' %}" class="close-btn">&times;</a>
+        </div>
+
+        <p class="hospital-name">
+            <strong>Hospital:</strong> {{ hospital.hospital_name }}
+        </p>
+<form method="POST">
+    {% csrf_token %}
+
+    <div class="popup-body">
+
+        <!-- LEFT SIDE -->
+        <div class="popup-left">
+
+            <div class="form-group">
+                <label>Blood Group</label>
+                <select name="blood_group" required>
+                    <option value="">-- Select Blood Group --</option>
+                    <option>A+</option><option>A-</option>
+                    <option>B+</option><option>B-</option>
+                    <option>AB+</option><option>AB-</option>
+                    <option>O+</option><option>O-</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Units Required</label>
+                <input type="number" name="units" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label>Urgency</label>
+                <select name="urgency" id="urgency" onchange="toggleFields()" required>
+                    <option value="NORMAL">Normal</option>
+                    <option value="EMERGENCY">Emergency 🚨</option>
+                </select>
+            </div>
+
+        </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="popup-right" id="normalFields">
+
+            <div class="form-group">
+                <label>Preferred Date</label>
+                <input type="date" name="preferred_date">
+            </div>
+
+            <div class="form-group">
+                <label>Preferred Time</label>
+                <select name="preferred_time">
+                    <option>Before 10 AM</option>
+                    <option>After 5 PM</option>
+                    <option>Any Time</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Patient Details (optional)</label>
+                <textarea name="patient_details" rows="3"></textarea>
+            </div>
+
+        </div>
+
+    </div>
+
+    <button type="submit" class="submit-btn">
+        Submit Request
+    </button>
+</form>
+
+    </div>
+</div>
+<!-- INFO SECTION -->
+<!-- INFO SECTION -->
+<div class="info-box">
+
+    <p class="info-title">
+        ℹ️ Important Guidelines for Blood Request
+    </p>
+
+    <p class="info-text">
+        Blood requests are handled with utmost priority and responsibility.
+        Please ensure that all information provided is accurate and genuine.
+        This helps hospitals and donors respond quickly and effectively.
+    </p>
+
+    <ul class="info-list">
+        <li>
+            🩸 <strong>Blood Group Accuracy:</strong>
+            Always confirm the required blood group with the hospital before submitting.
+        </li>
+
+        <li>
+            📦 <strong>Units Required:</strong>
+            Request only the necessary number of units to avoid shortage for others.
+        </li>
+
+        <li>
+            🚑 <strong>Emergency Requests:</strong>
+            Emergency cases are instantly notified to available donors and hospitals.
+        </li>
+
+        <li>
+            ⏱️ <strong>Normal Requests:</strong>
+            Normal requests may take additional time based on availability.
+        </li>
+
+        <li>
+            🏥 <strong>Hospital Verification:</strong>
+            The hospital may contact you to verify patient details before approval.
+        </li>
+
+        <li>
+            📞 <strong>Contact Responsibility:</strong>
+            Ensure your contact details are correct and reachable at all times.
+        </li>
+
+        <li>
+            🔒 <strong>Privacy Protection:</strong>
+            Your personal information is securely stored and never shared publicly.
+        </li>
+
+        <li>
+            🤝 <strong>Donor Availability:</strong>
+            Blood availability depends on donor response and current stock.
+        </li>
+    </ul>
+
+    <div class="info-extra">
+        <p>
+            ❤️ <strong>LifeFlow Mission:</strong><br>
+            Our mission is to connect patients, donors, and hospitals efficiently
+            to save lives during critical situations.
+        </p>
+    </div>
+
+    <div class="info-warning">
+        ⚠️ Submitting false, misleading, or unnecessary blood requests
+        may result in temporary or permanent account restrictions.
+    </div>
+
+</div>
+
+
+<script>
+function toggleFields() {
+    const urgency = document.getElementById("urgency").value;
+    document.getElementById("normalFields").style.display =
+        urgency === "EMERGENCY" ? "none" : "block";
+}
+</script>
+{% endblock %}

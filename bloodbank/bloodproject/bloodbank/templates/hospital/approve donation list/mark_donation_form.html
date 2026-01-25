@@ -1,0 +1,63 @@
+{% extends 'hospital_header.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+<h2>🩸 Confirm Blood Donation</h2>
+
+<div style="max-width:600px;background:#fff;padding:20px;border-radius:10px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.1);">
+
+    <p>
+        <b>Donor Name:</b> {{ donation.user_name }} <br>
+        <b>Blood Group:</b> {{ donation.blood_group }} <br>
+        <b>Phone:</b> {{ donation.phone }} <br>
+        <b>Hospital:</b> {{ donation.hospital.hospital_name }}
+    </p>
+
+    <hr>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="mb-3">
+            <label><b>Donation Date</b></label>
+            <input type="date"
+                   name="donation_date"
+                   value="{{ today }}"
+                   class="form-control"
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label><b>Time Slot</b></label>
+            <select name="time_slot" class="form-control" required>
+                <option value="">-- Select --</option>
+                {% for t in time_slots %}
+                <option value="{{ t }}">{{ t }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label><b>Units Collected</b></label>
+            <input type="number"
+                   name="units_collected"
+                   min="1"
+                   class="form-control"
+                   required>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            ✅ Save Donation
+        </button>
+
+        <a href="{% url 'approve_list' %}"
+           class="btn btn-secondary ms-2">
+            Cancel
+        </a>
+
+    </form>
+</div>
+</div>
+{% endblock %}

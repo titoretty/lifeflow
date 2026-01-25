@@ -1,0 +1,243 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LifeFlow - Blood Bank Management System{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/index1.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- ================= HEADER / NAVBAR ================= -->
+<header class="header">
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+
+        <!-- Logo -->
+        <a class="navbar-brand fw-bold" href="{% url 'index' %}">
+            <i class="fas fa-tint text-danger"></i> LifeFlow
+        </a>
+
+        <!-- Mobile Toggle -->
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+
+            <!-- ================= CENTER MENU ================= -->
+            <ul class="navbar-nav mx-auto">
+
+                {% if request.session.user_id %}
+
+                <li class="nav-item">
+                    <a class="nav-link active" href="{% url 'index' %}">Home</a>
+                </li>
+
+                <!-- Donor -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link active" href="#" data-bs-toggle="dropdown">
+                        Donor
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'donate' %}">Donate Blood</a></li>
+                        <li><a class="dropdown-item" href="{% url 'donation_history' %}">Donation History</a></li>
+                        <li><a class="dropdown-item" href="{% url 'eligibility_status' %}">Eligibility Status</a></li>
+                    </ul>
+                </li>
+
+                <!-- Receiver -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link active" href="#" data-bs-toggle="dropdown">
+                        Receiver
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'search_blood' %}">Search Blood</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-danger fw-bold" href="{% url 'emergency' %}">
+                        Emergency Request
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Appointments</a>
+                </li>
+
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user_register' %}">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user_login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">About</a>
+                </li>
+                {% endif %}
+            </ul>
+
+            <!-- ================= RIGHT SIDE ================= -->
+            {% if request.session.user_id %}
+            <ul class="navbar-nav align-items-center">
+
+                <!-- Notification -->
+                <li class="nav-item me-3">
+    <a class="nav-link position-relative" href="{% url 'notifications' %}">
+        <i class="fas fa-bell"></i>
+
+        {% if notif_count > 0 %}
+        <span class="position-absolute top-0 start-100 translate-middle
+                     badge rounded-pill bg-danger">
+            {{ notif_count }}
+        </span>
+        {% endif %}
+    </a>
+</li>
+
+
+
+                <!-- Profile -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link active d-flex align-items-center"
+                       href="#" data-bs-toggle="dropdown">
+
+                        {% with uname=request.session.user_name|default:"User" %}
+                        <!-- Avatar -->
+                        <div class="rounded-circle d-flex justify-content-center align-items-center me-2"
+                             style="
+                                width:40px;
+                                height:40px;
+                                background-color:#d10000;
+                                color:white;
+                                font-weight:700;
+                                font-size:14px;
+                                text-transform:uppercase;
+                             ">
+                            {{ uname|slice:":2" }}
+                        </div>
+
+                        <span class="fw-semibold">{{ uname }}</span>
+                        {% endwith %}
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'profile' %}">
+                                <i class="fas fa-user me-2"></i> My Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'edit_profile' %}">
+                                <i class="fas fa-edit me-2"></i> Edit Profile
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <i class="fas fa-key me-2"></i> Change Password
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-2"></i> Logout
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            {% else %}
+            <a href="{% url 'donate' %}" class="btn btn-danger text-white">
+                Donate Blood
+            </a>
+            {% endif %}
+
+        </div>
+    </div>
+</nav>
+</header>
+<!-- ================= END HEADER ================= -->
+
+
+<!-- ================= MAIN CONTENT ================= -->
+{% block content %}
+{% endblock %}
+<!-- ================= END CONTENT ================= -->
+
+
+<!-- ================= FOOTER ================= -->
+ <footer id="contact" class="footer bg-dark text-white py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Column 1: About -->
+            <div class="col-lg-4 mb-5">
+                <div class="footer-column">
+                    <h3>About LifeFlow</h3>
+                    <p>LifeFlow Blood Bank is dedicated to providing safe and high-quality blood products to patients in need. We work tirelessly to ensure that every donation is handled with care and precision.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: Quick Links -->
+            <div class="col-lg-4 mb-5">
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'index' %}">Home</a></li>
+                        <li><a href="{% url 'about' %}">About Us</a></li>
+                        <li><a href="#">Services</a></li>
+                        <li><a href="#">Donate Blood</a></li>
+                        <li><a href="#">Blood Availability</a></li>
+                        <li><a href="#">Emergency Request</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Column 3: Contact Info -->
+            <div class="col-lg-4 mb-5">
+                <div class="footer-column">
+                    <h3>Contact Info</h3>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Medical Center Drive, Health City</li>
+                        <li><i class="fas fa-phone"></i> +1 234 567 8900</li>
+                        <li><i class="fas fa-envelope"></i> info@lifeflow.org</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-5PM</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="copyright text-center mt-4 pt-3 border-top border-light">
+            <p class="mb-0">© {% now "Y" %} LifeFlow Blood Bank Management System. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

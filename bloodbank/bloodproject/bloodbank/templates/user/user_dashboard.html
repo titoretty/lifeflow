@@ -1,0 +1,207 @@
+{% extends "header.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+/* ================= GLOBAL ================= */
+body{
+    margin:0;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background:
+
+      url("{% static 'assets/img/img_2.png' %}") center/cover fixed;
+}
+
+/* ================= HERO ================= */
+.hero{
+    background:
+
+      url("{% static 'assets/img/img_2.png' %}") center/cover;
+    padding:70px 20px;
+    text-align:center;
+    color:#fff;
+}
+.hero h1{
+    font-size:42px;
+    margin-bottom:10px;
+}
+.hero p{
+    font-size:18px;
+    max-width:750px;
+    margin:auto;
+}
+
+/* ================= LAYOUT ================= */
+.page{
+    max-width:1400px;
+    margin:40px auto;
+    padding:0 20px;
+    display:grid;
+    grid-template-columns:1fr 3fr 1fr;
+    gap:30px;
+}
+
+/* ================= SIDE BOX ================= */
+.side-box{
+    background:#fff;
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+    margin-bottom:20px;
+}
+.side-box h3{
+    color:#b30000;
+    font-size:18px;
+    margin-bottom:12px;
+}
+.side-box ul{
+    padding-left:18px;
+}
+.side-box li,p{
+    font-size:14px;
+    color:#444;
+    margin-bottom:8px;
+}
+
+/* ================= CENTER ================= */
+.section-title{
+    font-size:26px;
+    margin-bottom:20px;
+    border-left:5px solid #b30000;
+    padding-left:10px;
+    color:#333;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:25px;
+}
+
+/* ================= CARD ================= */
+.card{
+    background:#fff;
+    border-radius:16px;
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+    overflow:hidden;
+}
+.card img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+}
+.card-body{
+    padding:16px;
+}
+.card h4{
+    color:#b30000;
+    font-size:18px;
+    margin-bottom:8px;
+}
+.card p{
+    font-size:14px;
+    margin:4px 0;
+}
+.badge{
+    display:inline-block;
+    padding:6px 16px;
+    border-radius:20px;
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+    margin-top:10px;
+}
+.upcoming{background:#1e88e5;}
+.ongoing{background:#2e7d32;}
+.completed{background:#c62828;}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:992px){
+    .page{grid-template-columns:1fr;}
+}
+</style>
+
+<!-- ================= HERO ================= -->
+<div class="hero">
+    <h1>🩸 Blood Camp Announcements</h1>
+    <p>Donate blood, save lives. Explore blood donation camps, schedules, and results all in one place.</p>
+</div>
+
+<!-- ================= PAGE ================= -->
+<div class="page">
+
+<!-- ========== LEFT ========== -->
+<div>
+    <div class="side-box">
+        <h3>🩸 Why Donate Blood?</h3>
+        <ul>
+            <li>Saves accident & surgery patients</li>
+            <li>One donation can save 3 lives</li>
+            <li>Improves donor health</li>
+            <li>Supports emergency care</li>
+        </ul>
+    </div>
+
+    <div class="side-box">
+        <h3>✅ Eligibility</h3>
+        <p>✔ Age: 18–65 years</p>
+        <p>✔ Weight: 45kg+</p>
+        <p>✔ Healthy & disease-free</p>
+    </div>
+</div>
+
+<!-- ========== CENTER ========== -->
+<div>
+
+<h2 class="section-title">All Blood Camps</h2>
+
+<div class="grid">
+{% for camp in camps %}
+<div class="card">
+    <img src="{% static 'assets/img/camp.jpg' %}">
+    <div class="card-body">
+        <h4>{{ camp.title }}</h4>
+        <p><b>Organizer:</b> {{ camp.organizer_name }}</p>
+        <p><b>Hospital:</b> {{ camp.hospital.hospital_name }}</p>
+        <p><b>Location:</b> {{ camp.location }}</p>
+        <p><b>Date:</b> {{ camp.camp_date }}</p>
+        <p><b>Time:</b> {{ camp.start_time }} – {{ camp.end_time }}</p>
+
+        {% if camp.status == "Upcoming" %}
+            <span class="badge upcoming">Upcoming</span>
+        {% elif camp.status == "Completed" %}
+            <span class="badge completed">Completed</span>
+        {% else %}
+            <span class="badge ongoing">Ongoing</span>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+</div>
+
+</div>
+
+<!-- ========== RIGHT ========== -->
+<div>
+    <div class="side-box">
+        <h3>📊 Quick Facts</h3>
+        <p>🧪 Blood Types: A, B, AB, O</p>
+        <p>⏳ Donation Time: 10–15 mins</p>
+        <p>🩸 Safe & sterile process</p>
+    </div>
+
+    <div class="side-box">
+        <h3>📞 Emergency Note</h3>
+        <p>In urgent cases, contact nearest hospital or blood bank immediately.</p>
+    </div>
+
+    <div class="side-box">
+        <h3>✅ Completed Camps</h3>
+        <p>👥 Donors: 52</p>
+        <p>🩸 Units Collected: 38</p>
+    </div>
+</div>
+
+</div>
+
+{% endblock %}

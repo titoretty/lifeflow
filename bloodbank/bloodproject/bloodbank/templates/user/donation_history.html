@@ -1,0 +1,224 @@
+{% extends 'header.html' %}
+
+{% block content %}
+
+<style>
+/* ===== Page Wrapper ===== */
+.history-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+/* ===== Heading ===== */
+.history-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #b30000;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+/* ===== Table Wrapper ===== */
+.table-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+}
+
+/* ===== Table ===== */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+/* ===== Table Head ===== */
+.history-table thead {
+    background: linear-gradient(135deg, #b30000, #ff4d4d);
+    color: #fff;
+}
+
+.history-table th {
+    padding: 14px;
+    font-size: 15px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* ===== Table Body ===== */
+.history-table td {
+    padding: 14px;
+    font-size: 14px;
+    text-align: center;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
+
+/* ===== Row Hover ===== */
+.history-table tbody tr:hover {
+    background-color: #fff5f5;
+    transition: 0.3s;
+}
+
+/* ===== Status Badges ===== */
+.status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-approved,
+.status-completed {
+    background-color: #e6f7ee;
+    color: #1e8e3e;
+}
+
+.status-pending {
+    background-color: #fff7e6;
+    color: #e69500;
+}
+
+.status-rejected {
+    background-color: #fdeaea;
+    color: #d93025;
+}
+
+/* ===== Date & Units cells ===== */
+.date-cell {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.date-cell .submitted {
+    color: #555;
+    font-weight: 500;
+}
+
+.date-cell .donated {
+    color: #1e8e3e;
+    font-weight: 600;
+}
+
+.date-cell .not-donated {
+    color: #e69500;
+    font-style: italic;
+}
+
+.units-cell {
+    font-weight: 600;
+}
+
+.units-cell .value {
+    color: #1e8e3e;
+}
+
+.units-cell .none {
+    color: #999;
+}
+
+/* ===== Empty Message ===== */
+.empty-row {
+    padding: 30px;
+    font-size: 15px;
+    color: #777;
+    text-align: center;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .history-title { font-size: 22px; }
+    .history-table { min-width: 100%; }
+}
+</style>
+
+<div class="history-container">
+    <h2 class="history-title">🩸 Donation History</h2>
+
+    {% if next_eligible_date %}
+    <p style="text-align: center; color: #555; margin-bottom: 20px; font-size: 1.1rem;">
+        Next eligible donation date:
+        <strong style="color: #b30000;">{{ next_eligible_date }}</strong>
+    </p>
+    {% endif %}
+
+    <div class="table-card">
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Submitted On</th>
+                    <th>Blood Group</th>
+                    <th>Hospital</th>
+                    <th>Time Slot</th>
+                    <th>Donation Date & Units</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for d in history %}
+            <tr>
+                <!-- Submitted Date -->
+                <td class="date-cell">
+                    <div class="submitted">Submitted:</div>
+                    <div>{{ d.created_at|date:"d M Y" }}</div>
+                    <div style="font-size: 0.85rem; color: #777;">
+                        {{ d.created_at|time:"H:i" }}
+                    </div>
+                </td>
+
+                <!-- Blood Group -->
+                <td><strong>{{ d.blood_group }}</strong></td>
+
+                <!-- Hospital -->
+                <td>{{ d.hospital.hospital_name }}</td>
+
+                <!-- Time Slot -->
+                <td>{{ d.time_slot|default:"—" }}</td>
+
+                <!-- Donation Date & Units (only show if completed) -->
+                <td class="date-cell units-cell">
+                    {% if d.status == 'COMPLETED' and d.donation_date %}
+                        <div class="donated">
+                            Donated: {{ d.donation_date|date:"d M Y" }}
+                        </div>
+                        <div>
+                            Units:
+                            <span class="value">
+                                {{ d.units_collected|default:"1" }}
+                            </span>
+                        </div>
+                    {% else %}
+                        <div class="not-donated">Not donated yet</div>
+                        <div class="none">Units: —</div>
+                    {% endif %}
+                </td>
+
+                <!-- Status -->
+                <td>
+                    {% if d.status == "APPROVED" %}
+                        <span class="status status-approved">Approved</span>
+                    {% elif d.status == "COMPLETED" %}
+                        <span class="status status-completed">Completed</span>
+                    {% elif d.status == "PENDING" %}
+                        <span class="status status-pending">Pending</span>
+                    {% else %}
+                        <span class="status status-rejected">Rejected</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="empty-row">
+                    No donation records found.
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeFlow - Blood Bank Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #e63946;
+            --dark-red: #a61e4d;
+            --light-red: #ffccd5;
+            --white: #ffffff;
+            --soft-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #6c757d;
+            --text-dark: #212529;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --shadow-light: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 8px 15px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #fff5f5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Elements */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .blood-cell {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(230, 57, 70, 0.2) 0%, rgba(230, 57, 70, 0) 70%);
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .blood-cell:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .blood-cell:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 70%;
+            left: 80%;
+            animation-delay: 3s;
+        }
+
+        .blood-cell:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 40%;
+            left: 30%;
+            animation-delay: 7s;
+        }
+
+        .blood-cell:nth-child(4) {
+            width: 100px;
+            height: 100px;
+            top: 80%;
+            left: 10%;
+            animation-delay: 10s;
+        }
+
+        .blood-cell:nth-child(5) {
+            width: 90px;
+            height: 90px;
+            top: 20%;
+            left: 60%;
+            animation-delay: 15s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, -20px) rotate(90deg);
+            }
+            50% {
+                transform: translate(-20px, 10px) rotate(180deg);
+            }
+            75% {
+                transform: translate(10px, 20px) rotate(270deg);
+            }
+        }
+
+        .ecg-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, rgba(230, 57, 70, 0.3) 50%, transparent 100%);
+            width: 100%;
+            top: 50%;
+            animation: ecg 8s infinite linear;
+        }
+
+        @keyframes ecg {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Main Container */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: var(--shadow-heavy);
+            overflow: hidden;
+            display: flex;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Left Side - Illustration */
+        .illustration-container {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .illustration-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.2;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            z-index: 1;
+        }
+
+        .logo i {
+            font-size: 40px;
+            color: white;
+            margin-right: 15px;
+        }
+
+        .logo h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .illustration {
+            width: 280px;
+            height: 280px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 30px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            z-index: 1;
+        }
+
+        .illustration i {
+            font-size: 120px;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .illustration-text {
+            color: white;
+            text-align: center;
+            z-index: 1;
+        }
+
+        .illustration-text h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .illustration-text p {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        /* Right Side - Forms */
+        .form-container {
+            flex: 1.2;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tab-header {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-gray);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            color: var(--primary-red);
+        }
+
+        .tab-button::after {
+            content: "";
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-red);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .tab-button.active::after {
+            transform: scaleX(1);
+        }
+
+        .form-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .form-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--medium-gray);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: var(--soft-gray);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+            background: white;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(230, 57, 70, 0.4);
+        }
+
+        .form-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .form-links a {
+            color: var(--primary-red);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .form-links a:hover {
+            text-decoration: underline;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--medium-gray);
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-red);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item input {
+            margin-right: 5px;
+        }
+
+        .checkbox-item label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        .note {
+            background-color: rgba(230, 57, 70, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--dark-red);
+            display: flex;
+            align-items: center;
+        }
+
+        .note i {
+            margin-right: 10px;
+        }
+
+        .progress-bar {
+            height: 5px;
+            background-color: var(--medium-gray);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-red) 0%, var(--dark-red) 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--success);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .container {
+                flex-direction: column;
+                max-width: 500px;
+            }
+
+            .illustration-container {
+                padding: 30px;
+                min-height: 200px;
+            }
+
+            .illustration {
+                width: 150px;
+                height: 150px;
+            }
+
+            .illustration i {
+                font-size: 70px;
+            }
+
+            .illustration-text h2 {
+                font-size: 20px;
+            }
+
+            .illustration-text p {
+                font-size: 14px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .checkbox-group {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .form-container {
+                padding: 20px;
+            }
+
+            .tab-button {
+                font-size: 16px;
+                padding: 12px 10px;
+            }
+
+            .checkbox-group {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="blood-cell"></div>
+        <div class="blood-cell"></div>
+        <div class="blood-cell"></div>
+        <div class="blood-cell"></div>
+        <div class="blood-cell"></div>
+        <div class="ecg-line"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Left Side - Illustration -->
+        <div class="illustration-container">
+            <div class="logo">
+                <i class="fas fa-tint"></i>
+                <h1>LifeFlow</h1>
+            </div>
+            <div class="illustration">
+                <i class="fas fa-hospital"></i>
+            </div>
+            <div class="illustration-text">
+                <h2>Blood Bank Management System</h2>
+                <p>Connecting hospitals and blood banks to save lives through efficient blood management</p>
+            </div>
+        </div>
+
+        <!-- Right Side - Forms -->
+        <div class="form-container">
+            <!-- Tab Header -->
+            <div class="tab-header">
+                <button class="tab-button active" onclick="switchTab('login')">Hospital Login</button>
+                <button class="tab-button" onclick="switchTab('register')">Hospital Registration</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login-form" class="form-content active">
+                <form>
+                    <div class="form-group">
+                        <label for="username">Hospital Username</label>
+                        <input type="text" id="username" class="form-control" placeholder="Enter your hospital username">
+                        <div class="error-message">Please enter a valid username</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Enter your password">
+                        <div class="error-message">Please enter your password</div>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="handleLogin()">Login</button>
+                    <div class="form-links">
+                        <a href="#">Forgot Password?</a>
+                        <a href="#" onclick="switchTab('register')">New Hospital? Register Here</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Registration Form -->
+            <div id="register-form" class="form-content">
+                <div class="progress-bar">
+                    <div class="progress" id="registration-progress"></div>
+                </div>
+                <form>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="hospital-name">Hospital Name</label>
+                            <input type="text" id="hospital-name" class="form-control" placeholder="Enter hospital name">
+                            <div class="error-message">Please enter hospital name</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-number">Registration Number</label>
+                            <input type="text" id="reg-number" class="form-control" placeholder="Enter registration number">
+                            <div class="error-message">Please enter registration number</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="hospital-type">Hospital Type</label>
+                            <select id="hospital-type" class="form-control">
+                                <option value="" disabled selected>Select hospital type</option>
+                                <option value="government">Government</option>
+                                <option value="private">Private</option>
+                            </select>
+                            <div class="error-message">Please select hospital type</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="district">District</label>
+                            <select id="district" class="form-control">
+                                <option value="" disabled selected>Select district</option>
+                                <option value="district1">District 1</option>
+                                <option value="district2">District 2</option>
+                                <option value="district3">District 3</option>
+                                <option value="district4">District 4</option>
+                            </select>
+                            <div class="error-message">Please select district</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Full Address</label>
+                        <input type="text" id="address" class="form-control" placeholder="Enter full address">
+                        <div class="error-message">Please enter address</div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact">Contact Number</label>
+                            <input type="tel" id="contact" class="form-control" placeholder="Enter contact number">
+                            <div class="error-message">Please enter contact number</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Official Email ID</label>
+                            <input type="email" id="email" class="form-control" placeholder="Enter official email">
+                            <div class="error-message">Please enter valid email</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="reg-username">Username</label>
+                            <input type="text" id="reg-username" class="form-control" placeholder="Choose a username">
+                            <div class="error-message">Please enter username</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password">Password</label>
+                            <input type="password" id="reg-password" class="form-control" placeholder="Create a password">
+                            <div class="error-message">Please enter password</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password</label>
+                        <input type="password" id="confirm-password" class="form-control" placeholder="Confirm your password">
+                        <div class="error-message">Passwords do not match</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blood-bank">Blood Bank Available</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="blood-bank">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>Supported Blood Groups</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="a-positive">
+                                <label for="a-positive">A+</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="a-negative">
+                                <label for="a-negative">A-</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="b-positive">
+                                <label for="b-positive">B+</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="b-negative">
+                                <label for="b-negative">B-</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ab-positive">
+                                <label for="ab-positive">AB+</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="ab-negative">
+                                <label for="ab-negative">AB-</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="o-positive">
+                                <label for="o-positive">O+</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="o-negative">
+                                <label for="o-negative">O-</label>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="handleRegistration()">Submit Registration</button>
+                    <div class="note">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Registration requires admin approval. You will receive an email once your account is verified.</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Update tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            if (tabName === 'login') {
+                tabButtons[0].classList.add('active');
+                document.getElementById('login-form').classList.add('active');
+                document.getElementById('register-form').classList.remove('active');
+            } else {
+                tabButtons[1].classList.add('active');
+                document.getElementById('login-form').classList.remove('active');
+                document.getElementById('register-form').classList.add('active');
+            }
+        }
+
+        // Handle login
+        function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Reset error messages
+            document.querySelectorAll('#login-form .error-message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+
+            let hasError = false;
+
+            if (!username) {
+                document.querySelector('#username + .error-message').style.display = 'block';
+                hasError = true;
+            }
+
+            if (!password) {
+                document.querySelector('#password + .error-message').style.display = 'block';
+                hasError = true;
+            }
+
+            if (!hasError) {
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.className = 'success-message';
+                successMsg.textContent = 'Login successful! Redirecting...';
+                successMsg.style.display = 'block';
+                document.getElementById('login-form').appendChild(successMsg);
+
+                // Simulate redirect after 2 seconds
+                setTimeout(() => {
+                    alert('This would redirect to the dashboard in a real application');
+                    successMsg.remove();
+                }, 2000);
+            }
+        }
+
+        // Handle registration
+        function handleRegistration() {
+            // Reset error messages
+            document.querySelectorAll('#register-form .error-message').forEach(msg => {
+                msg.style.display = 'none';
+            });
+
+            let hasError = false;
+
+            // Validate required fields
+            const requiredFields = [
+                'hospital-name', 'reg-number', 'hospital-type', 'district',
+                'address', 'contact', 'email', 'reg-username', 'reg-password', 'confirm-password'
+            ];
+
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value) {
+                    document.querySelector(`#${fieldId} + .error-message`).style.display = 'block';
+                    hasError = true;
+                }
+            });
+
+            // Check if passwords match
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            if (password !== confirmPassword) {
+                document.querySelector('#confirm-password + .error-message').style.display = 'block';
+                hasError = true;
+            }
+
+            if (!hasError) {
+                // Show success message
+                const successMsg = document.createElement('div');
+                successMsg.className = 'success-message';
+                successMsg.textContent = 'Registration submitted successfully! Awaiting admin approval.';
+                successMsg.style.display = 'block';
+                document.getElementById('register-form').appendChild(successMsg);
+
+                // Reset form after 3 seconds
+                setTimeout(() => {
+                    document.getElementById('register-form').querySelector('form').reset();
+                    successMsg.remove();
+                    switchTab('login');
+                }, 3000);
+            }
+        }
+
+        // Update registration progress bar
+        document.addEventListener('DOMContentLoaded', function() {
+            const formInputs = document.querySelectorAll('#register-form input, #register-form select');
+            const progressBar = document.getElementById('registration-progress');
+
+            formInputs.forEach(input => {
+                input.addEventListener('input', updateProgress);
+                input.addEventListener('change', updateProgress);
+            });
+
+            function updateProgress() {
+                let filledFields = 0;
+                const totalFields = formInputs.length;
+
+                formInputs.forEach(input => {
+                    if (input.type === 'checkbox') {
+                        if (input.checked) filledFields++;
+                    } else if (input.value) {
+                        filledFields++;
+                    }
+                });
+
+                const progress = (filledFields / totalFields) * 100;
+                progressBar.style.width = progress + '%';
+            }
+        });
+    </script>
+</body>
+</html>

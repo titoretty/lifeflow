@@ -1,0 +1,29 @@
+{% extends "admin/admin_header.html" %}
+
+{% block content %}
+<h2>Registered Users</h2>
+
+<table border="1" cellpadding="10" width="100%">
+<tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Blood Group</th>
+    <th>Status</th>
+</tr>
+
+{% for u in users %}
+<tr>
+    <td>{{ u.full_name }}</td>
+    <td>{{ u.email }}</td>
+    <td>{{ u.blood_group }}</td>
+    <td>
+        {% if u.status == 1 %}
+            Active
+        {% else %}
+            Inactive
+        {% endif %}
+    </td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

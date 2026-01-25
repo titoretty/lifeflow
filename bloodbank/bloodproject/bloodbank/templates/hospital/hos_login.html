@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare Portal - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #c41e3a;
+            --primary-red-dark: #a01730;
+            --primary-red-light: #e85a75;
+            --white: #ffffff;
+            --light-gray: #f5f5f7;
+            --medium-gray: #e5e5e7;
+            --dark-gray: #555555;
+            --text-color: #333333;
+            --shadow-light: rgba(255, 255, 255, 0.8);
+            --shadow-dark: rgba(0, 0, 0, 0.15);
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --error-color: #ff4d4d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f0f2;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background Elements */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(196, 30, 58, 0.1) 0%, rgba(196, 30, 58, 0.05) 100%);
+            border-radius: 50% 50% 0 0;
+            transform: scaleX(1.5);
+        }
+
+        .wave:nth-child(2) {
+            bottom: 50px;
+            opacity: 0.5;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(196, 30, 58, 0.08) 0%, rgba(196, 30, 58, 0.03) 100%);
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(196, 30, 58, 0.1) 0%, rgba(196, 30, 58, 0) 70%);
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+        }
+
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: 100px;
+            left: -50px;
+        }
+
+        .circle-3 {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            right: 10%;
+        }
+
+        /* Login Container */
+        .login-container {
+            width: 90%;
+            max-width: 900px;
+            display: flex;
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 20px 20px 60px var(--shadow-dark), -20px -20px 60px var(--shadow-light);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Left Side - Illustration */
+        .login-illustration {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .illustration-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+        }
+
+        .illustration-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .illustration-title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .illustration-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            max-width: 300px;
+            line-height: 1.5;
+        }
+
+        .abstract-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .shape-1 {
+            width: 200px;
+            height: 200px;
+            top: -50px;
+            left: -50px;
+        }
+
+        .shape-2 {
+            width: 150px;
+            height: 150px;
+            bottom: -30px;
+            right: -30px;
+        }
+
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            top: 50%;
+            left: 20%;
+        }
+
+        /* Right Side - Login Form */
+        .login-form-container {
+            flex: 1;
+            padding: 60px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            margin-bottom: 40px;
+        }
+
+        .login-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: var(--dark-gray);
+            font-size: 16px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border: none;
+            border-radius: 12px;
+            background: var(--light-gray);
+            box-shadow: inset 5px 5px 10px var(--shadow-dark), inset -5px -5px 10px var(--shadow-light);
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            background: var(--white);
+            box-shadow: 0 0 0 2px rgba(196, 30, 58, 0.3), 5px 5px 15px var(--shadow-dark), -5px -5px 15px var(--shadow-light);
+        }
+
+        .form-input::placeholder {
+            color: var(--dark-gray);
+            opacity: 0.7;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-gray);
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .form-input:focus ~ .input-icon {
+            color: var(--primary-red);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: -10px;
+            margin-bottom: 25px;
+        }
+
+        .forgot-password a {
+            color: var(--primary-red);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password a:hover {
+            color: var(--primary-red-dark);
+            text-decoration: underline;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(196, 30, 58, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(196, 30, 58, 0.4);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(196, 30, 58, 0.3);
+        }
+
+        .login-button .button-text {
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-button .button-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+        }
+
+        .login-button.loading .button-text {
+            opacity: 0;
+        }
+
+        .login-button.loading .button-loader {
+            display: block;
+        }
+
+        .spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 400px;
+            }
+
+            .login-illustration {
+                padding: 30px 20px;
+            }
+
+            .illustration-icon {
+                font-size: 60px;
+            }
+
+            .illustration-title {
+                font-size: 24px;
+            }
+
+            .login-form-container {
+                padding: 40px 30px;
+            }
+
+            .login-title {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="bg-shapes">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <!-- Left Side - Illustration -->
+        <div class="login-illustration">
+            <div class="abstract-shape shape-1"></div>
+            <div class="abstract-shape shape-2"></div>
+            <div class="abstract-shape shape-3"></div>
+
+            <div class="illustration-content">
+                <div class="illustration-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <h2 class="illustration-title">MediCare Portal</h2>
+                <p class="illustration-subtitle">Your health, our priority. Access your medical records and appointments securely.</p>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="login-form-container">
+            <div class="login-header">
+                <h1 class="login-title">Welcome Back</h1>
+                <p class="login-subtitle">Please login to your account</p>
+            </div>
+
+            <form id="loginForm" method="post" action="{% url 'hos_login' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-input" id="username" name="username"placeholder="Username or Email" required>
+                    <i class="fas fa-user input-icon"></i>
+                    <div class="error-message" id="usernameError">Please enter a valid username or email</div>
+                </div>
+
+                <div class="form-group">
+                    <input type="password" class="form-input" id="password"name="password" placeholder="Password" required>
+                    <i class="fas fa-lock input-icon"></i>
+                    <div class="error-message" id="passwordError">Please enter your password</div>
+                </div>
+
+                <div class="forgot-password">
+                    <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="login-button" id="loginButton">
+                    <span class="button-text">Login</span>
+                    <div class="button-loader">
+                        <div class="spinner"></div>
+                    </div>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+       document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const loginButton = document.getElementById('loginButton');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const usernameError = document.getElementById('usernameError');
+    const passwordError = document.getElementById('passwordError');
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+
+    // Form validation and submission
+    loginForm.addEventListener('submit', function(e) {
+        // Reset error messages
+        usernameError.classList.remove('show');
+        passwordError.classList.remove('show');
+
+        let isValid = true;
+
+        // Validate username/email
+        if (!usernameInput.value.trim()) {
+            usernameError.classList.add('show');
+            isValid = false;
+        }
+
+        // Validate password
+        if (!passwordInput.value.trim()) {
+            passwordError.classList.add('show');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            // Prevent submission if invalid
+            e.preventDefault();
+            return;
+        }
+
+        // Show loader on button
+        loginButton.classList.add('loading');
+
+        // Allow form to submit to Django view
+        // Slight delay to show loader effect
+        setTimeout(function() {
+            loginForm.submit(); // Actual submission
+        }, 200); // 200ms delay is enough for loader effect
+    });
+
+    // Forgot password link
+    forgotPasswordLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('Password reset functionality will be implemented here.');
+    });
+
+    // Input focus effects
+    const inputs = document.querySelectorAll('.form-input');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+        });
+
+        input.addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    });
+});
+
+    </script>
+</body>
+</html>

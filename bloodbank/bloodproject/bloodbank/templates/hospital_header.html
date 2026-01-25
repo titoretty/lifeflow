@@ -1,0 +1,694 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeBlood Hospital - Blood Bank Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{% static 'assets/css/hos_index.css' %}">
+
+    <!-- Enhanced Navbar Styles with Glassmorphism -->
+    <style>
+        :root {
+            --primary-red: #dc3545;
+            --primary-red-dark: #c82333;
+            --light-gray: #f8f9fa;
+            --medium-gray: #e9ecef;
+            --dark-gray: #6c757d;
+            --white: #ffffff;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --shadow-xl: 0 12px 32px rgba(0,0,0,0.15);
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles with Glassmorphism */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all var(--transition-normal);
+            border-bottom: 1px solid rgba(220, 53, 69, 0.1);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 70px;
+        }
+
+        /* Logo Section with Glow Effect */
+        .logo-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo {
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+            color: var(--white);
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.25);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .logo:hover::before {
+            transform: translateX(0);
+        }
+
+        .logo:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.35);
+        }
+
+        .logo i {
+            font-size: 1.6rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hospital-name a {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+            letter-spacing: -0.5px;
+        }
+
+        .hospital-name a:hover {
+            transform: scale(1.05);
+        }
+
+        /* Navigation Menu */
+        nav {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-menu > li {
+            position: relative;
+            margin: 0 0.3rem;
+        }
+
+        .nav-menu > li > a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+
+        .nav-menu > li > a i {
+            margin-right: 8px;
+            font-size: 1rem;
+        }
+
+        .nav-menu > li > a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+            transition: all var(--transition-normal);
+            transform: translateX(-50%);
+            border-radius: 3px;
+        }
+
+        .nav-menu > li > a:hover {
+            color: var(--primary-red);
+            background-color: rgba(220, 53, 69, 0.08);
+        }
+
+        .nav-menu > li > a:hover::after {
+            width: 70%;
+        }
+
+        /* Dropdown Styles with Glassmorphism */
+        .dropdown > a {
+            cursor: pointer;
+        }
+
+        .dropdown > a i.fa-chevron-down {
+            margin-left: 5px;
+            font-size: 0.75rem;
+            transition: transform var(--transition-normal);
+        }
+
+        .dropdown.active > a i.fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            min-width: 200px;
+            box-shadow: var(--shadow-lg);
+            border-radius: 12px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all var(--transition-normal);
+            z-index: 1000;
+            padding: 0.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+        }
+
+        .dropdown-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+        }
+
+        .dropdown.active .dropdown-content {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-content li {
+            list-style: none;
+        }
+
+        .dropdown-content li a {
+            display: flex;
+            align-items: center;
+            padding: 0.7rem 1.5rem;
+            color: #444;
+            text-decoration: none;
+            font-weight: 400;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .dropdown-content li a i {
+            margin-right: 10px;
+            font-size: 0.9rem;
+            color: var(--dark-gray);
+            transition: color var(--transition-fast);
+        }
+
+        .dropdown-content li a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: linear-gradient(180deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+            transform: scaleY(0);
+            transition: transform var(--transition-fast);
+            transform-origin: bottom;
+        }
+
+        .dropdown-content li a:hover {
+            color: var(--primary-red);
+            background-color: rgba(220, 53, 69, 0.08);
+            padding-left: 1.8rem;
+        }
+
+        .dropdown-content li a:hover i {
+            color: var(--primary-red);
+        }
+
+        .dropdown-content li a:hover::before {
+            transform: scaleY(1);
+        }
+
+        /* Notification Icon with Pulse Effect */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            margin-left: 1rem;
+        }
+
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(220, 53, 69, 0.08);
+            transition: all var(--transition-normal);
+        }
+
+        .notification-icon:hover {
+            background-color: rgba(220, 53, 69, 0.15);
+            transform: scale(1.05);
+        }
+
+        .notification-icon i {
+            color: var(--primary-red);
+            font-size: 1.1rem;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: linear-gradient(135deg, var(--primary-red) 0%, var(--primary-red-dark) 100%);
+            color: var(--white);
+            font-size: 0.65rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(220, 53, 69, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 8px rgba(220, 53, 69, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-red);
+            cursor: pointer;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: rgba(220, 53, 69, 0.08);
+            transition: all var(--transition-normal);
+        }
+
+        .menu-toggle:hover {
+            background-color: rgba(220, 53, 69, 0.15);
+        }
+
+        .menu-toggle i {
+            transition: transform var(--transition-normal);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            .nav-menu > li > a {
+                padding: 0.8rem 0.7rem;
+                font-size: 0.85rem;
+            }
+
+            .nav-menu > li > a i {
+                margin-right: 5px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                box-shadow: var(--shadow-lg);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height var(--transition-slow);
+                border-radius: 0 0 12px 12px;
+            }
+
+            nav.active {
+                max-height: 500px;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .nav-menu > li {
+                margin: 0.2rem 0;
+                width: 100%;
+            }
+
+            .nav-menu > li > a {
+                padding: 0.8rem 1rem;
+                width: 100%;
+                border-radius: 10px;
+            }
+
+            .dropdown-content {
+                position: static;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                box-shadow: none;
+                margin-left: 1rem;
+                margin-top: 0.5rem;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height var(--transition-normal);
+                background: rgba(220, 53, 69, 0.05);
+                border-radius: 10px;
+            }
+
+            .dropdown.active .dropdown-content {
+                max-height: 200px;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Background Elements -->
+    <div class="bg-shapes">
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+        <div class="bg-shape shape-3"></div>
+    </div>
+
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-hospital"></i>
+                </div>
+                <div class="hospital-name">
+                    <a href="{% url 'hos_index' %}">
+                        {% if hospital %}{{ hospital.hospital_name }}{% endif %}
+                    </a>
+                </div>
+            </div>
+
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav id="navMenu">
+                <ul class="nav-menu">
+
+
+
+                    <!-- DONORS -->
+
+                    <li class="dropdown">
+                        <a href="javascript:void(0)">
+                            <i class="fas fa-hand-holding-heart"></i> Donors
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-content">
+                            <li>
+                                <a href="{% url 'donors_list' %}">
+                                    <i class="fas fa-hand-holding-heart"></i> donors_list
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'donate_request' %}">
+                                    <i class="fas fa-hand-holding-medical"></i> Donate Requests
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{% url 'approve_list' %}">
+                                    <i class="fas fa-check-circle"></i> Approve List
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- BLOOD CAMPS -->
+                    <li class="dropdown" id="bloodCampDropdown">
+                        <a href="javascript:void(0)">
+                            <i class="fas fa-campground"></i> Blood Camp
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-content">
+                            <li>
+                                <a href="{% url 'blood_camp' %}">
+                                    <i class="fas fa-plus-circle"></i> Create Camp
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'see_camp' %}">
+                                    <i class="fas fa-list"></i> See Camps
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- RECEIVERS -->
+                    <li class="dropdown">
+                        <a href="javascript:void(0)">
+                            <i class="fas fa-hand-holding-heart"></i> Receivers
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-content">
+                            <li>
+                                <a href="{% url 'receiver_requests' %}">
+                                    <i class="fas fa-hand-holding-heart"></i> Blood Requests
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
+                    <!-- STOCK -->
+                    <li>
+                        <a href="{% url 'stock' %}">
+                            <i class="fas fa-boxes"></i> Stock
+                        </a>
+                    </li>
+
+                    <!-- REPORTS -->
+                    <li class="dropdown">
+                        <a href="javascript:void(0)">
+                            <i class="fas fa-check-circle"></i> Reports
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+
+                    </li>
+
+                    <!-- ACCOUNT -->
+                    <li class="dropdown user-dropdown">
+                        <a href="javascript:void(0)">
+                            <i class="fas fa-user-circle"></i> Account
+                            <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <ul class="dropdown-content">
+                            <li>
+                                <a href="{% url 'hospital_dashboard' %}">
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'logout' %}" class="text-danger">
+                                    <i class="fas fa-sign-out-alt"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </nav>
+
+
+            <div class="nav-actions">
+                <div class="notification-icon">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    {% block content %}
+    {% endblock %}
+
+    <!-- Enhanced JavaScript for Dropdown and Mobile Menu -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dropdown functionality
+            const dropdowns = document.querySelectorAll('.dropdown');
+
+            dropdowns.forEach(dropdown => {
+                const toggle = dropdown.querySelector('a');
+
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Close other dropdowns
+                    dropdowns.forEach(otherDropdown => {
+                        if (otherDropdown !== dropdown) {
+                            otherDropdown.classList.remove('active');
+                        }
+                    });
+
+                    // Toggle current dropdown
+                    dropdown.classList.toggle('active');
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    dropdowns.forEach(dropdown => {
+                        dropdown.classList.remove('active');
+                    });
+                }
+            });
+
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menuToggle');
+            const navMenu = document.getElementById('navMenu');
+
+            menuToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+
+                // Toggle icon with animation
+                const icon = menuToggle.querySelector('i');
+                if (navMenu.classList.contains('active')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                    icon.style.transform = 'rotate(180deg)';
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                    icon.style.transform = 'rotate(0)';
+                }
+            });
+
+            // Close mobile menu when clicking a link
+            const navLinks = document.querySelectorAll('.nav-menu > li > a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth <= 768) {
+                        navMenu.classList.remove('active');
+                        const icon = menuToggle.querySelector('i');
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                        icon.style.transform = 'rotate(0)';
+                    }
+                });
+            });
+
+            // Add subtle header shadow on scroll
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('.header');
+                if (window.scrollY > 10) {
+                    header.style.boxShadow = '0 8px 24px rgba(0,0,0,0.12)';
+                } else {
+                    header.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)';
+                }
+            });
+
+            // Notification icon click animation
+            const notificationIcon = document.querySelector('.notification-icon');
+            notificationIcon.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1.05)';
+                }, 100);
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>

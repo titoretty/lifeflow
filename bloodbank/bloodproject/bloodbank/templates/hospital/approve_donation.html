@@ -1,0 +1,287 @@
+{% extends 'hospital_header.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* ================= BACKGROUND ================= */
+.bg-canvas {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #fff1f1, #ffffff);
+    overflow: hidden;
+    z-index: -1;
+}
+
+/* Floating blobs */
+.bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.12;
+    animation: float 12s infinite ease-in-out;
+}
+.bg-circle.red { background: #d10000; }
+.bg-circle.light { background: #ffcccc; }
+
+@keyframes float {
+    0% { transform: translate(0,0); }
+    50% { transform: translate(20px,-25px); }
+    100% { transform: translate(0,0); }
+}
+
+/* ================= PAPER CUTTINGS ================= */
+.paper-strip {
+    position: absolute;
+    width: 320px;
+    padding: 14px 16px;
+    background: #fafafa;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #555;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    opacity: 0.75;
+    transform: rotate(-3deg);
+    animation: paperFloat 18s infinite ease-in-out;
+}
+
+.paper-strip::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background: repeating-linear-gradient(
+        90deg,
+        #eee,
+        #eee 8px,
+        #ddd 8px,
+        #ddd 16px
+    );
+}
+
+.paper-strip.right {
+    transform: rotate(4deg);
+}
+
+@keyframes paperFloat {
+    0% { transform: translateY(0) rotate(-3deg); }
+    50% { transform: translateY(-25px) rotate(-1deg); }
+    100% { transform: translateY(0) rotate(-3deg); }
+}
+
+.paper-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.paper-watermark {
+    position: absolute;
+    bottom: 8px;
+    right: 10px;
+    font-size: 10px;
+    color: #999;
+}
+
+/* ================= MAIN WRAPPER ================= */
+.approve-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    animation: fadeSlide 0.6s ease;
+    z-index: 2;
+    position: relative;
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================= CARD ================= */
+.approve-card {
+    background: #fff;
+    max-width: 520px;
+    width: 100%;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 14px 45px rgba(0,0,0,0.18);
+    position: relative;
+}
+
+.approve-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    height: 6px;
+    width: 100%;
+    background: linear-gradient(90deg,#d10000,#ff5252);
+}
+
+.approve-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #b71c1c;
+    margin-bottom: 20px;
+}
+
+/* ================= DONOR INFO ================= */
+.donor-info {
+    background: #fff5f5;
+    border-left: 5px solid #d32f2f;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+.donor-info p { margin: 6px 0; }
+
+/* ================= FORM ================= */
+.form-group { margin-bottom: 18px; }
+label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+input, select {
+    width: 100%;
+    padding: 11px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+input:focus, select:focus {
+    outline: none;
+    border-color: #d10000;
+    box-shadow: 0 0 0 3px rgba(209,0,0,0.15);
+}
+
+/* ================= ACTIONS ================= */
+.action-row {
+    display: flex;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.approve-btn {
+    flex: 1;
+    background: linear-gradient(135deg,#2e7d32,#43a047);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+}
+.approve-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(46,125,50,.6);
+}
+
+.cancel-link {
+    font-weight: 600;
+    color: #555;
+    text-decoration: none;
+}
+.cancel-link:hover { color:#d10000; }
+
+/* ================= NOTE ================= */
+.note-box {
+    margin-top: 20px;
+    background: #f1f8ff;
+    border-left: 4px solid #1976d2;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:600px){
+    .approve-card { padding:22px; }
+}
+</style>
+
+<!-- BACKGROUND -->
+<div class="bg-canvas">
+    <div class="bg-circle red" style="width:220px;height:220px;top:10%;left:5%"></div>
+    <div class="bg-circle light" style="width:160px;height:160px;top:65%;left:10%"></div>
+    <div class="bg-circle red" style="width:260px;height:260px;top:20%;right:8%"></div>
+    <div class="bg-circle light" style="width:140px;height:140px;bottom:10%;right:15%"></div>
+
+    <!-- PAPER CUTTINGS -->
+    <div class="paper-strip" style="top:18%; left:2%;">
+        <div class="paper-title">Blood donation saves lives</div>
+        Kerala hospitals report increased donor participation during emergencies.
+        <div class="paper-watermark">Daily Health</div>
+    </div>
+
+    <div class="paper-strip right" style="top:60%; left:6%; animation-delay:4s;">
+        <div class="paper-title">Emergency donors respond fast</div>
+        Night-time accident victims receive blood within minutes.
+        <div class="paper-watermark">Hospital News</div>
+    </div>
+
+    <div class="paper-strip" style="top:22%; right:3%; animation-delay:6s;">
+        <div class="paper-title">Voluntary donation awareness</div>
+        Doctors encourage youth to donate blood regularly.
+        <div class="paper-watermark">Health Bulletin</div>
+    </div>
+
+    <div class="paper-strip right" style="bottom:12%; right:8%; animation-delay:9s;">
+        <div class="paper-title">Kerala leads in donation drives</div>
+        Camps organized across districts show positive results.
+        <div class="paper-watermark">Mathrubhumi</div>
+    </div>
+</div>
+
+<!-- MAIN CARD -->
+<div class="approve-wrapper">
+    <div class="approve-card">
+
+        <h2 class="approve-title">🩸 Approve Blood Donation</h2>
+
+        <div class="donor-info">
+            <p><b>Donor Name:</b> {{ donation.user_name }}</p>
+            <p><b>Blood Group:</b> {{ donation.blood_group }}</p>
+            <p><b>Phone:</b> {{ donation.phone }}</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Select Donation Date</label>
+                <input type="date"
+                       name="donation_date"
+                       min="{{ today|date:'Y-m-d' }}"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Select Time Slot</label>
+                <select name="time_slot" required>
+                    <option value="">-- Select Time Slot --</option>
+                    {% for t in time_slots %}
+                        <option value="{{ t }}">{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="action-row">
+                <button class="approve-btn">✅ Approve Donation</button>
+                <a href="{% url 'donate_request' %}" class="cancel-link">Cancel</a>
+            </div>
+        </form>
+
+        <div class="note-box">
+            ℹ️ Donor will be notified once approved. Confirm availability carefully.
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,273 @@
+{% extends 'hospital_header.html' %}
+{% block content %}
+
+<style>
+/* ============ BACKGROUND ANIMATION ============ */
+body{
+    background: linear-gradient(270deg,#f5f7fa,#e3f2fd,#fdecea);
+    background-size:600% 600%;
+    animation:bgAnim 15s ease infinite;
+}
+
+@keyframes bgAnim{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+/* Floating bubbles */
+.bg span{
+    position:fixed;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:rgba(231,76,60,.15);
+    animation:float 25s linear infinite;
+    z-index:0;
+}
+
+.bg span:nth-child(1){left:10%}
+.bg span:nth-child(2){left:35%;background:rgba(46,204,113,.15)}
+.bg span:nth-child(3){left:60%;width:80px;height:80px}
+.bg span:nth-child(4){left:85%;background:rgba(52,152,219,.15)}
+
+@keyframes float{
+    0%{bottom:-120px;transform:rotate(0)}
+    100%{bottom:120%;transform:rotate(360deg)}
+}
+
+/* ============ LAYOUT ============ */
+.container{
+    max-width:1400px;
+    margin:auto;
+    padding:20px;
+    position:relative;
+    z-index:2;
+}
+
+h2{margin-bottom:20px;color:#2c3e50}
+
+/* ============ CONTROLS ============ */
+.controls{
+    background:#fff;
+    padding:15px;
+    border-radius:8px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+    display:flex;
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.search-box{
+    flex:1;
+    position:relative;
+}
+
+.search-box input{
+    width:100%;
+    padding:10px 15px 10px 40px;
+    border:1px solid #ddd;
+    border-radius:4px;
+}
+
+.search-box::before{
+    content:"🔍";
+    position:absolute;
+    left:12px;
+    top:50%;
+    transform:translateY(-50%);
+}
+
+.filter-group select{
+    padding:10px;
+    border-radius:4px;
+    border:1px solid #ddd;
+}
+
+/* ============ TABLE ============ */
+.table-container{
+    background:#fff;
+    border-radius:8px;
+    box-shadow:0 2px 10px rgba(0,0,0,.05);
+    overflow:hidden;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:15px;
+    border-bottom:1px solid #eee;
+}
+
+th{background:#f8f9fa;text-align:left}
+
+/* Avatar */
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#e74c3c,#f39c12);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    margin-right:10px;
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(231,76,60,.4)}
+    70%{box-shadow:0 0 0 10px rgba(231,76,60,0)}
+    100%{box-shadow:0 0 0 0 rgba(231,76,60,0)}
+}
+
+.donor-cell{display:flex;align-items:center}
+
+/* Blood badge */
+.blood-badge{
+    padding:6px 12px;
+    border-radius:20px;
+    background:#3498db;
+    color:#fff;
+    font-weight:bold;
+    animation:floatBadge 3s ease-in-out infinite;
+}
+
+@keyframes floatBadge{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-4px)}
+}
+
+/* Status */
+.available{
+    color:#28a745;
+    font-weight:bold;
+}
+
+.not-available{
+    color:#dc3545;
+    font-weight:bold;
+}
+
+/* Responsive */
+@media(max-width:768px){
+    table,thead,tbody,th,td,tr{display:block}
+    thead{display:none}
+
+    tr{
+        background:#fff;
+        margin-bottom:15px;
+        border-radius:8px;
+        padding:12px;
+        box-shadow:0 2px 10px rgba(0,0,0,.05);
+    }
+
+    td{
+        border:none;
+        padding:6px 0;
+    }
+
+    td::before{
+        content:attr(data-label);
+        font-weight:bold;
+        display:block;
+        color:#555;
+    }
+}
+</style>
+
+<!-- Background animation -->
+<div class="bg">
+    <span></span><span></span><span></span><span></span>
+</div>
+
+<div class="container">
+
+<h2>Available Donors</h2>
+
+<div class="controls">
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search donor or blood group">
+    </div>
+
+    <div class="filter-group">
+        <select id="bloodFilter">
+            <option value="">All Blood Groups</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option>
+            <option>AB+</option><option>AB-</option>
+        </select>
+    </div>
+</div>
+
+<div class="table-container">
+<table>
+<thead>
+<tr>
+    <th>Donor</th>
+    <th>Blood Group</th>
+    <th>Phone</th>
+    <th>Status</th>
+</tr>
+</thead>
+
+<tbody>
+{% for donor in donors %}
+<tr data-name="{{ donor.full_name }}" data-blood="{{ donor.blood_group }}">
+    <td data-label="Donor">
+        <div class="donor-cell">
+            <div class="avatar">{{ donor.full_name|slice:":1" }}</div>
+            {{ donor.full_name }}
+        </div>
+    </td>
+
+    <td data-label="Blood Group">
+        <span class="blood-badge">{{ donor.blood_group }}</span>
+    </td>
+
+    <td data-label="Phone">
+        📞 {{ donor.phone }}
+    </td>
+
+    <td data-label="Status">
+        {% if donor.is_available %}
+            <span class="available">Available</span>
+        {% else %}
+            <span class="not-available">Not Available</span>
+        {% endif %}
+    </td>
+</tr>
+{% empty %}
+<tr><td colspan="4">No donors found</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+</div>
+
+<script>
+function filterDonors(){
+    const s = searchInput.value.toLowerCase();
+    const b = bloodFilter.value;
+
+    document.querySelectorAll("tbody tr").forEach(row=>{
+        const show =
+            (row.dataset.name.toLowerCase().includes(s) ||
+             row.dataset.blood.toLowerCase().includes(s)) &&
+            (!b || row.dataset.blood === b);
+
+        row.style.display = show ? "" : "none";
+    });
+}
+
+searchInput.onkeyup = filterDonors;
+bloodFilter.onchange = filterDonors;
+</script>
+
+{% endblock %}

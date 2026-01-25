@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeFlow - Select Location</title>
+
+    <!-- Leaflet CSS + JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-red: #d10000;
+            --light-red: #ffeded;
+            --dark-red: #a30000;
+            --white: #ffffff;
+            --light-grey: #f5f7fa;
+            --medium-grey: #e1e5eb;
+            --dark-grey: #333333;
+            --text-light: #6c757d;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.15);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-grey);
+            color: var(--dark-grey);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .background {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://picsum.photos/seed/blooddonation/1600/900.jpg') center/cover no-repeat;
+            filter: blur(8px); z-index: -1;
+        }
+
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.4); z-index: 10;
+        }
+
+        .navbar {
+            background-color: var(--white); padding: 15px 30px;
+            box-shadow: var(--shadow-sm); position: relative; z-index: 20;
+        }
+
+        .navbar-container {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo {
+            display: flex; align-items: center; font-size: 1.5rem;
+            font-weight: bold; color: var(--primary-red);
+        }
+
+        .logo i { margin-right: 10px; font-size: 1.8rem; }
+
+        .nav-links { display: flex; list-style: none; }
+        .nav-links li { margin-left: 25px; }
+        .nav-links a {
+            text-decoration: none; color: var(--dark-grey); font-weight: 500;
+            transition: var(--transition); position: relative;
+        }
+        .nav-links a:hover { color: var(--primary-red); }
+        .nav-links a.active { color: var(--primary-red); }
+        .nav-links a.active::after {
+            content: ''; position: absolute; bottom: -5px; left: 0;
+            width: 100%; height: 2px; background-color: var(--primary-red);
+        }
+
+        .modal-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 100; padding: 20px;
+        }
+
+        .modal-card {
+            background-color: var(--white); border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg); width: 100%; max-width: 720px;
+            overflow: hidden; animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 30px 30px 20px; text-align: center;
+            border-bottom: 1px solid var(--medium-grey);
+        }
+
+        .modal-title { font-size: 1.8rem; font-weight: 600; color: var(--dark-grey); margin-bottom: 8px; }
+        .modal-subtitle { color: var(--text-light); font-size: 1rem; }
+
+        .modal-body {
+            padding: 20px 30px 30px;
+            display: flex;
+            flex-direction: row;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .left-column {
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .right-column {
+            flex: 1;
+            min-width: 300px;
+            max-width: 420px;
+        }
+
+        #map {
+            height: 340px;
+            border-radius: 10px;
+            box-shadow: var(--shadow-md);
+            display: none;
+            background: #e8ecef; /* subtle fallback while loading */
+        }
+
+        .location-option {
+            border: 2px solid var(--medium-grey); border-radius: var(--border-radius);
+            padding: 20px; margin-bottom: 20px; cursor: pointer;
+            transition: var(--transition); display: flex; align-items: center;
+        }
+
+        .location-option:hover { border-color: var(--primary-red); background-color: var(--light-red); }
+        .location-option.selected { border-color: var(--primary-red); background-color: var(--light-red); }
+
+        .location-option-icon {
+            width: 50px; height: 50px; border-radius: 50%;
+            background-color: var(--light-red); display: flex;
+            justify-content: center; align-items: center; margin-right: 20px; flex-shrink: 0;
+        }
+
+        .location-option-icon i { color: var(--primary-red); font-size: 1.4rem; }
+
+        .location-option-content { flex: 1; }
+
+        .location-option-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 5px; }
+        .location-option-subtitle { font-size: 0.9rem; color: var(--text-light); }
+
+        .location-detected {
+            margin-top: 10px; padding: 8px 12px; background-color: var(--white);
+            border-radius: 6px; font-size: 0.9rem; color: var(--dark-grey); display: none;
+        }
+
+        .spinner {
+            display: none; width: 20px; height: 20px;
+            border: 3px solid rgba(209, 0, 0, 0.2); border-radius: 50%;
+            border-top-color: var(--primary-red);
+            animation: spin 1s ease-in-out infinite; margin-left: 10px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .divider { display: flex; align-items: center; margin: 25px 0; }
+        .divider::before, .divider::after {
+            content: ""; flex: 1; height: 1px; background-color: var(--medium-grey);
+        }
+        .divider span { padding: 0 15px; color: var(--text-light); font-size: 0.9rem; }
+
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--dark-grey); }
+        select, input {
+            width: 100%; padding: 12px 15px; border: 1px solid var(--medium-grey);
+            border-radius: 8px; font-size: 1rem; transition: var(--transition);
+            background-color: var(--white);
+        }
+        select:focus, input:focus {
+            outline: none; border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(209, 0, 0, 0.1);
+        }
+.btn-submit {
+    background-color: var(--primary-red); color: var(--white);
+    padding: 14px 30px; font-size: 1.1rem; font-weight: 600;
+    border: none; border-radius: 8px; cursor: pointer;
+    transition: var(--transition); display: inline-flex;
+    align-items: center; justify-content: center; width: 100%;
+    margin-top: 20px; box-shadow: var(--shadow-md);
+}
+
+.btn-submit:hover:not(:disabled) {
+    background-color: var(--dark-red); transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-row{
+    display: flex;
+    gap: 15px;
+}
+
+.btn-submit:disabled {
+    background-color: var(--medium-grey); cursor: not-allowed; box-shadow: none;
+}
+
+.btn-submit i { margin-right: 10px; }
+
+
+        @media (max-width: 768px) {
+            .modal-body {
+                flex-direction: column;
+                padding: 20px;
+            }
+            .right-column { width: 100%; max-width: none; }
+            #map { height: 280px; }
+            .navbar { padding: 15px 20px; }
+            .modal-card {
+                border-radius: var(--border-radius) var(--border-radius) 0 0;
+                position: fixed; bottom: 0; max-height: 90vh; overflow-y: auto;
+            }
+            .modal-container { padding: 0; align-items: flex-end; }
+            .modal-header { padding: 25px 25px 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="overlay"></div>
+
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <span>LifeFlow</span>
+            </div>
+        </div>
+    </nav>
+
+{% if not can_donate %}
+<div id="notEligibleBox" style="position: relative; z-index: 200; max-width: 500px; margin: 30px auto; background: #fff3f3; border: 2px solid #d10000; border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+    <h3 style="color:#d10000;">🩸 Donation Not Allowed</h3>
+    <p><b>Last Donation:</b> {{ user.last_donation_date }}</p>
+    <p><b>You can donate again after:</b></p>
+    <p style="font-size:18px;font-weight:600;">{{ next_eligible_date }}</p>
+    <button disabled style="margin-top:15px; padding:10px 20px; border:none; border-radius:6px; background:#999; color:#fff; cursor:not-allowed;">
+        Not Eligible to Donate
+    </button>
+</div>
+{% endif %}
+
+{% if can_donate %}
+    <div class="modal-container">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="modal-title">Choose Your Location</h2>
+                <p class="modal-subtitle">Help us connect you with nearby blood banks</p>
+            </div>
+
+            <form method="POST" action="{% url 'hospital_list' %}" id="locationForm">
+                {% csrf_token %}
+
+                <input type="hidden" name="method" id="methodInput">
+                <input type="hidden" name="district" id="districtHidden">
+
+                <div class="modal-body">
+
+                    <div class="left-column">
+
+                        <!-- CURRENT LOCATION OPTION -->
+                        <div class="location-option" id="currentLocationOption">
+                            <div class="location-option-icon"><i class="fas fa-location-arrow"></i></div>
+                            <div class="location-option-content">
+                                <h3 class="location-option-title">Use Current Location</h3>
+                                <p class="location-option-subtitle">Automatically detect your location</p>
+                                <div class="location-detected" id="locationDetected" style="display:none;">
+                                    <i class="fas fa-check-circle" style="color: green; margin-right: 5px;"></i>
+                                    <span id="detectedLocation"></span>
+                                </div>
+                            </div>
+                            <div class="spinner" id="locationSpinner" style="display:none;"></div>
+                        </div>
+
+                        <div class="divider"><span>OR</span></div>
+
+                        <!-- MANUAL LOCATION OPTION -->
+                        <div class="location-option" id="manualLocationOption">
+                            <div class="location-option-icon"><i class="fas fa-map-marked-alt"></i></div>
+                            <div class="location-option-content">
+                                <h3 class="location-option-title">Manual Location Selection</h3>
+                                <p class="location-option-subtitle">Select your district</p>
+                            </div>
+                        </div>
+
+                        <div id="manualLocationForm" style="display:none; margin-top:20px;">
+                            <div class="form-group">
+                                <label for="districtSelect">Select District</label>
+                                <select id="districtSelect">
+                                    <option value="">-- Select District --</option>
+                                    <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                                    <option value="Kollam">Kollam</option>
+                                    <option value="Pathanamthitta">Pathanamthitta</option>
+                                    <option value="Alappuzha">Alappuzha</option>
+                                    <option value="Kottayam">Kottayam</option>
+                                    <option value="Idukki">Idukki</option>
+                                    <option value="Ernakulam">Ernakulam</option>
+                                    <option value="Thrissur">Thrissur</option>
+                                    <option value="Palakkad">Palakkad</option>
+                                    <option value="Malappuram">Malappuram</option>
+                                    <option value="Kozhikode">Kozhikode</option>
+                                    <option value="Wayanad">Wayanad</option>
+                                    <option value="Kannur">Kannur</option>
+                                    <option value="Kasaragod">Kasaragod</option>
+                                </select>
+                            </div>
+                        </div>
+
+          <div class="btn-row">
+    <button type="submit" class="btn-submit" id="submitBtn" disabled>
+        <i class="fas fa-check"></i> Continue
+    </button>
+
+    <a href="{% url 'index' %}" class="btn-submit">
+        <i class="fas fa-arrow-left"></i> Back
+    </a>
+</div>
+
+
+
+
+                    </div>
+
+                    <!-- RIGHT SIDE - MAP -->
+                    <div class="right-column">
+                        <div id="map"></div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+{% endif %}
+
+<script>
+/* ================= DISTRICT MAP ================= */
+const DISTRICT_MAP = {
+    "എറണാകുളം": "Ernakulam", "എറണാകുളം ജില്ല": "Ernakulam",
+    "കൊല്ലം": "Kollam", "കൊല്ലം ജില്ല": "Kollam",
+    "തിരുവനന്തപുരം": "Thiruvananthapuram", "തിരുവനന്തപുരം ജില്ല": "Thiruvananthapuram",
+    "ആലപ്പുഴ": "Alappuzha", "ആലപ്പുഴ ജില്ല": "Alappuzha",
+    "പത്തനംതിട്ട": "Pathanamthitta", "പത്തനംതിട്ട ജില്ല": "Pathanamthitta",
+    "കോട്ടയം": "Kottayam", "കോട്ടയം ജില്ല": "Kottayam",
+    "ഇടുക്കി": "Idukki", "ഇടുക്കി ജില്ല": "Idukki",
+    "ത്രിശൂർ": "Thrissur", "ത്രിശൂർ ജില്ല": "Thrissur",
+    "പാലക്കാട്": "Palakkad", "മലപ്പുറം": "Malappuram",
+    "കോഴിക്കോട്": "Kozhikode", "വയനാട്": "Wayanad",
+    "കണ്ണൂർ": "Kannur", "കാസർഗോഡ്": "Kasaragod",
+    "Ernakulam": "Ernakulam", "Kollam": "Kollam", "Thiruvananthapuram": "Thiruvananthapuram",
+    "Alappuzha": "Alappuzha", "Pathanamthitta": "Pathanamthitta", "Kottayam": "Kottayam",
+    "Idukki": "Idukki", "Thrissur": "Thrissur", "Palakkad": "Palakkad",
+    "Malappuram": "Malappuram", "Kozhikode": "Kozhikode", "Wayanad": "Wayanad",
+    "Kannur": "Kannur", "Kasaragod": "Kasaragod"
+};
+
+/* ================= ELEMENTS ================= */
+const currentLocationOption = document.getElementById("currentLocationOption");
+const manualLocationOption = document.getElementById("manualLocationOption");
+const manualLocationForm = document.getElementById("manualLocationForm");
+const methodInput = document.getElementById("methodInput");
+const districtHidden = document.getElementById("districtHidden");
+const submitBtn = document.getElementById("submitBtn");
+const locationSpinner = document.getElementById("locationSpinner");
+const locationDetected = document.getElementById("locationDetected");
+const detectedLocation = document.getElementById("detectedLocation");
+const districtSelect = document.getElementById("districtSelect");
+
+/* ================= MAP VARIABLES ================= */
+let map = null;
+let marker = null;
+let accuracyCircle = null;
+
+/* ================= RESET ================= */
+function resetSelections() {
+    submitBtn.disabled = true;
+    districtHidden.value = "";
+    locationDetected.style.display = "none";
+    locationSpinner.style.display = "none";
+    const mapDiv = document.getElementById("map");
+    if (mapDiv) mapDiv.style.display = "none";
+}
+
+/* ================= SHOW / UPDATE MAP ================= */
+function showOrUpdateMap(lat, lon, accuracy = 0) {
+    const mapDiv = document.getElementById("map");
+    mapDiv.style.display = "block";
+
+    if (!map) {
+        map = L.map('map', {
+            zoomControl: true,
+            attributionControl: true
+        }).setView([lat, lon], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        marker = L.marker([lat, lon], { title: "Your current location" }).addTo(map);
+
+        if (accuracy > 0) {
+            accuracyCircle = L.circle([lat, lon], {
+                radius: accuracy,
+                color: 'var(--primary-red)',
+                fillColor: 'var(--light-red)',
+                fillOpacity: 0.2
+            }).addTo(map);
+        }
+
+        marker.bindPopup("<strong>You are here</strong><br>Detected location").openPopup();
+    } else {
+        map.setView([lat, lon], 15);
+        marker.setLatLng([lat, lon]);
+        if (accuracyCircle) {
+            accuracyCircle.setLatLng([lat, lon]);
+            accuracyCircle.setRadius(accuracy);
+        }
+    }
+
+    // Fix rendering when previously hidden
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 400);
+}
+
+/* ================= CURRENT LOCATION ================= */
+currentLocationOption.addEventListener("click", () => {
+    resetSelections();
+    methodInput.value = "live";
+
+    manualLocationOption.classList.remove("selected");
+    manualLocationForm.style.display = "none";
+    currentLocationOption.classList.add("selected");
+
+    const userConfirmed = confirm(
+        "LifeFlow would like to access your location to find nearby blood banks.\n\n" +
+        "Allow location access?"
+    );
+
+    if (!userConfirmed) {
+        alert("You chose not to share your location.\nYou can select your district manually.");
+        currentLocationOption.classList.remove("selected");
+        return;
+    }
+
+    locationSpinner.style.display = "inline-block";
+
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        locationSpinner.style.display = "none";
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const accuracy = position.coords.accuracy || 0;
+
+            try {
+                const res = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&addressdetails=1`,
+                    { headers: { "User-Agent": "LifeFlow-Blood-App" } }
+                );
+
+                if (!res.ok) throw new Error("Reverse geocoding failed");
+
+                const data = await res.json();
+
+                if (!data.address || data.address.state !== "Kerala") {
+                    alert("Detected location is outside Kerala. Please select manually.");
+                    locationSpinner.style.display = "none";
+                    return;
+                }
+
+                let rawDistrict = data.address.state_district ||
+                                  data.address.county ||
+                                  data.address.city ||
+                                  data.address.town ||
+                                  "";
+
+                rawDistrict = rawDistrict.replace(" District", "").replace(" ജില്ല", "").trim();
+
+                let district = DISTRICT_MAP[rawDistrict];
+
+                if (!district) {
+                    alert("Unable to accurately detect district. Please select manually.");
+                    locationSpinner.style.display = "none";
+                    return;
+                }
+
+                districtHidden.value = district;
+                detectedLocation.innerText = `${district} (detected automatically)`;
+
+                locationDetected.style.display = "block";
+                locationSpinner.style.display = "none";
+                submitBtn.disabled = false;
+
+                showOrUpdateMap(lat, lon, accuracy);
+
+            } catch (err) {
+                console.error(err);
+                locationSpinner.style.display = "none";
+                alert("Unable to fetch location details. Please try manual selection.");
+            }
+        },
+        (err) => {
+            locationSpinner.style.display = "none";
+            let msg = "Could not get your location.";
+            if (err.code === 1) msg = "Location permission was denied.";
+            if (err.code === 2) msg = "Position unavailable.";
+            if (err.code === 3) msg = "Location request timed out.";
+            alert(msg);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+    );
+});
+
+/* ================= MANUAL LOCATION ================= */
+manualLocationOption.addEventListener("click", () => {
+    resetSelections();
+    methodInput.value = "manual";
+    currentLocationOption.classList.remove("selected");
+    manualLocationOption.classList.add("selected");
+    manualLocationForm.style.display = "block";
+});
+
+/* ================= DISTRICT SELECT ================= */
+districtSelect.addEventListener("change", () => {
+    if (districtSelect.value) {
+        districtHidden.value = districtSelect.value;
+        submitBtn.disabled = false;
+    } else {
+        submitBtn.disabled = true;
+    }
+});
+
+/* ================= BLOCK IF NOT ELIGIBLE ================= */
+document.addEventListener("DOMContentLoaded", function () {
+    const notEligible = {{ can_donate|yesno:"false,true" }} === true;
+
+    if (notEligible) {
+        if (submitBtn) submitBtn.disabled = true;
+        document.getElementById("currentLocationOption").style.pointerEvents = "none";
+        document.getElementById("manualLocationOption").style.pointerEvents = "none";
+        document.getElementById("currentLocationOption").style.opacity = "0.4";
+        document.getElementById("manualLocationOption").style.opacity = "0.4";
+        if (manualLocationForm) manualLocationForm.style.display = "none";
+    }
+});
+</script>
+</body>
+</html>

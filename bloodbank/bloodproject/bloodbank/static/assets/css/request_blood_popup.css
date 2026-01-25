@@ -1,0 +1,123 @@
+.popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.popup-card {
+    background: #fff;
+    max-width: 900px;
+    width: 95%;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.popup-header h3 {
+    color: #d10000;
+}
+
+.close-btn {
+    font-size: 26px;
+    text-decoration: none;
+    color: #555;
+}
+
+.hospital-name {
+    margin: 10px 0 20px;
+    font-size: 14px;
+}
+
+/* TWO COLUMN */
+.popup-body {
+    display: flex;
+    gap: 20px;
+}
+
+.popup-left {
+    flex: 1.2;
+}
+
+.popup-right {
+    flex: 0.8;
+}
+
+/* FORM */
+.form-group {
+    margin-bottom: 14px;
+}
+
+label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #d10000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.submit-btn:hover {
+    background: #a30000;
+}
+
+/* INFO */
+.info-box {
+    background: #fff5f5;
+    border-left: 5px solid #d32f2f;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+.info-title {
+    font-weight: 600;
+    color: #b71c1c;
+    margin-bottom: 8px;
+}
+
+.info-list {
+    padding-left: 18px;
+}
+
+.info-list li {
+    margin-bottom: 6px;
+}
+
+.info-warning {
+    margin-top: 10px;
+    padding: 8px;
+    background: #fff0f0;
+    border: 1px dashed #d32f2f;
+    font-size: 12px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .popup-body {
+        flex-direction: column;
+    }
+}

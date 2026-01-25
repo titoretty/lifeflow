@@ -1,0 +1,437 @@
+{% extends "header.html" %}
+{% load static %}
+
+{% block title %}
+BloodCare - Blood Donation & Blood Bank Locator
+{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ===== VARIABLES ===== */
+:root {
+    --primary-color: #e74c3c;
+    --secondary-color: #c0392b;
+    --light-color: #f8f9fa;
+    --dark-color: #2c3e50;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+    --gray-color: #95a5a6;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+/* ===== GENERAL STYLES ===== */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ===== SEARCH SECTION ===== */
+.search-section {
+    background-color: var(--primary-color);
+    padding: 30px 0;
+    color: white;
+}
+
+.search-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.search-bar {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.search-bar input.search-input {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+    border: none;
+    outline: none;
+}
+
+.search-bar button {
+    padding: 10px 20px;
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.search-bar button:hover {
+    background-color: #922b21;
+}
+
+/* ===== FILTER OPTIONS ===== */
+.filter-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-options button {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filter-options button:hover {
+    background-color: #922b21;
+}
+
+.view-toggle {
+    margin-left: auto;
+    display: flex;
+    gap: 5px;
+}
+
+.view-btn {
+    padding: 6px 10px;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    background-color: white;
+    color: var(--dark-color);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.view-btn.active {
+    background-color: var(--success-color);
+    color: white;
+}
+
+/* ===== RESULTS HEADER ===== */
+.results-header {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.results-count span {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.sort-options select {
+    padding: 6px 10px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--gray-color);
+}
+.hospital-cards {
+    display: flex;          /* use flexbox for side-by-side */
+    flex-wrap: wrap;        /* wrap to next line if not enough space */
+    gap: 15px;              /* spacing between cards */
+    justify-content: flex-start; /* start from left */
+    margin: 0 auto 20px;
+    padding: 0 15px;
+    max-width: 1200px;      /* optional, container width */
+}
+
+.hospital-card {
+    flex: 0 0 500px;       /* fixed small width for each card */
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: var(--transition);
+}
+
+.hospital-card:hover {
+    transform: translateY(-5px);
+}
+
+/* rest of your card styles remain same */
+.card-header {
+    padding: 15px;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.blood-bank-badge {
+    padding: 5px 10px;
+    border-radius: var(--border-radius);
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.badge-available {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.badge-unavailable {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.card-body {
+    padding: 15px;
+    flex: 1;
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.info-row i {
+    color: var(--primary-color);
+}
+
+.info-content b {
+    margin-right: 5px;
+}
+
+.card-footer {
+    padding: 15px;
+    background-color: var(--light-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 6px 12px;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: var(--transition);
+}
+
+.btn-request {
+    background-color: var(--primary-color);
+    color: white;
+}
+.btn-request a {
+    color: inherit;
+    text-decoration: none;
+    pointer-events: none; /* prevent anchor conflict */
+}
+
+.btn-directions {
+    background-color: var(--gray-color);
+    color: white;
+}
+
+.btn-request:hover {
+    background-color: #c0392b;
+}
+
+.btn-directions {
+    background-color: var(--gray-color);
+    color: white;
+}
+
+.btn-directions:hover {
+    background-color: #7f8c8d;
+}
+
+/* ===== NO RESULTS ===== */
+.no-results {
+    text-align: center;
+    padding: 50px 15px;
+    color: var(--gray-color);
+}
+
+.no-results i {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- SEARCH SECTION -->
+<section class="search-section">
+    <div class="search-container">
+
+        <div class="search-bar">
+            <input type="text" class="search-input"
+                   placeholder="Search by blood group, hospital name, or location">
+            <button class="btn btn-primary">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+
+        <div class="filter-options">
+            <button class="btn btn-secondary">
+                <i class="fas fa-location-dot"></i> Use Live Location
+            </button>
+            <button class="btn btn-secondary">
+                <i class="fas fa-filter"></i> Select District
+            </button>
+            <button class="btn btn-secondary">
+                <i class="fas fa-sliders"></i> Filter
+            </button>
+
+            <div class="view-toggle">
+                <button class="view-btn active">
+                    <i class="fas fa-list"></i> List View
+                </button>
+                <button class="view-btn">
+                    <i class="fas fa-map"></i> Map View
+                </button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<main>
+
+    <div class="results-header">
+        <div class="results-count">
+            Found <span>{{ hospitals|length }}</span> blood banks
+        </div>
+
+        <div class="sort-options">
+            <label>Sort by:</label>
+            <select>
+                <option>Distance</option>
+                <option>Availability</option>
+                <option>Name</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="hospital-cards">
+
+        {% if hospitals %}
+            {% for hospital in hospitals %}
+            <div class="hospital-card">
+
+                <div class="card-header">
+                    <h3 class="hospital-name">
+                        {{ hospital.hospital_name }}
+                    </h3>
+
+                    {% if hospital.blood_bank_available %}
+                        <div class="blood-bank-badge badge-available">
+                            <i class="fas fa-check-circle"></i> Available
+                        </div>
+                    {% else %}
+                        <div class="blood-bank-badge badge-unavailable">
+                            <i class="fas fa-times-circle"></i> Not Available
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-body">
+
+                    <div class="info-row">
+                        <i class="fas fa-location-dot"></i>
+                        <div class="info-content">
+                            <b>District:</b> {{ hospital.district }}
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <i class="fas fa-map-pin"></i>
+                        <div class="info-content">
+                            <b>Address:</b> {{ hospital.address }}
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <i class="fas fa-phone"></i>
+                        <div class="info-content">
+                            <b>Contact:</b> {{ hospital.contact_number }}
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <i class="fas fa-envelope"></i>
+                        <div class="info-content">
+                            <b>Email:</b> {{ hospital.email }}
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <div class="last-updated">
+                        <i class="fas fa-clock"></i>
+                        Last updated recently
+                    </div>
+
+                <button class="action-btn btn-request">
+    <i class="fas fa-hand-holding-medical"></i>
+    <a href="{% url 'Donate_blood' hospital.id %}">Request Blood</a>
+</button>
+
+                        <button class="action-btn btn-directions">
+                            <i class="fas fa-directions"></i>
+                            Get Directions
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <h3>No blood banks found</h3>
+                <p>Try changing district or location</p>
+            </div>
+        {% endif %}
+
+    </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".btn-request").forEach(button => {
+        button.addEventListener("click", function () {
+            const link = this.querySelector("a");
+            if (link && link.href) {
+                window.location.href = link.href;
+            }
+        });
+    });
+});
+</script>
+
+</main>
+
+{% endblock %}

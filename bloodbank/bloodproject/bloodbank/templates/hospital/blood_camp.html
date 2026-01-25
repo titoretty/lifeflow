@@ -1,0 +1,190 @@
+{% extends 'hospital_header.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+/* ===== Page Background using your image ===== */
+.camp-page {
+    min-height: 100vh;
+    background: url("{% static 'assets/img/img.png' %}") no-repeat center;
+    background-size: 100%;   /* 🔽 reduce image size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+
+/* Overlay for readability */
+.camp-overlay {
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+/* ===== Glassmorphism Form ===== */
+.glass-form {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    animation: fadeUp 0.8s ease;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.glass-form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #c0392b;
+}
+
+/* Inputs */
+.glass-form input,
+.glass-form textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.85);
+    font-size: 14px;
+}
+
+.glass-form textarea {
+    resize: none;
+    height: 100px;
+}
+
+.time-row {
+    display: flex;
+    gap: 10px;
+}
+
+/* Button */
+.glass-form button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform .3s, box-shadow .3s;
+}
+
+.glass-form button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(231,76,60,.4);
+}
+
+/* ===== Side Info Panel ===== */
+.side-panel {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+.side-panel h3 {
+    color: #c0392b;
+    margin-bottom: 15px;
+}
+
+.side-panel ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.side-panel li {
+    margin-bottom: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Highlight note */
+.note {
+    background: rgba(231,76,60,0.15);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+/* ===== Responsive ===== */
+@media(max-width:900px) {
+    .camp-overlay {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="camp-page">
+    <div class="camp-overlay">
+
+        <!-- Glassmorphism Form -->
+        <div class="glass-form">
+            <h2>🩸 Post Blood Camp Announcement</h2>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <input type="text" name="organizer_name"
+                       placeholder="Organizer (Eg: NSS Unit, College)" required>
+
+                <input type="text" name="title"
+                       placeholder="Camp Title" required>
+
+                <textarea name="description"
+                          placeholder="Camp Details" required></textarea>
+
+                <input type="date" name="camp_date" required>
+
+                <div class="time-row">
+                    <input type="time" name="start_time" required>
+                    <input type="time" name="end_time" required>
+                </div>
+
+                <input type="text" name="location"
+                       placeholder="Location" required>
+
+                <button type="submit">Post Announcement</button>
+            </form>
+        </div>
+
+        <!-- Side Notes / Articles -->
+        <div class="side-panel">
+            <h3>📌 Camp Guidelines</h3>
+            <ul>
+                <li>✔ Ensure donor eligibility criteria are displayed</li>
+                <li>✔ Maintain proper hygiene and medical safety</li>
+                <li>✔ Provide refreshments after donation</li>
+                <li>✔ Emergency medical staff must be available</li>
+            </ul>
+
+            <h3>📖 Did You Know?</h3>
+            <ul>
+                <li>🩸 One donation can save up to 3 lives</li>
+                <li>⏳ Blood can be donated every 3 months</li>
+                <li>❤️ Regular donors reduce heart disease risk</li>
+            </ul>
+
+            <div class="note">
+                📢 Tip: Promote your camp early to get maximum participation.
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,345 @@
+{% extends 'hospital_header.html' %}
+{% load static %}
+{% block content %}
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>LifeBlood Hospital Blood Bank</h1>
+                <p>Managing blood supply and saving lives since 1995</p>
+
+                <div class="status-badges">
+                    <div class="status-badge approved">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Government Approved</span>
+                    </div>
+                    <div class="status-badge active">
+                        <i class="fas fa-circle"></i>
+                        <span>Active Blood Bank</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-illustration">
+                <div class="hero-circle"></div>
+                <i class="fas fa-tint hero-icon"></i>
+            </div>
+        </section>
+
+        <!-- Statistics Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon blood">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                </div>
+                <div class="stat-value">2,450</div>
+                <div class="stat-label">Total Blood Units Available</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12% from last week</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon donors">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-value">1,832</div>
+                <div class="stat-label">Total Registered Donors</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>8% from last month</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <div class="stat-value">27</div>
+                <div class="stat-label">Pending Blood Requests</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>5% from yesterday</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon emergency">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <div class="stat-value">5</div>
+                <div class="stat-label">Emergency Requests</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>2 new today</span>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Donor Management Section -->
+        <section class="donor-section">
+            <h2 class="section-title">
+                <i class="fas fa-users"></i>
+                Recent Donor Registrations
+            </h2>
+
+            <table class="donor-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Blood Group</th>
+                        <th>Last Donation</th>
+                        <th>Contact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="donor-name">John Smith</td>
+                        <td><span class="blood-group-badge positive">O+</span></td>
+                        <td>June 5, 2023</td>
+                        <td>john.smith@email.com</td>
+                    </tr>
+                    <tr>
+                        <td class="donor-name">Emily Davis</td>
+                        <td><span class="blood-group-badge negative">A-</span></td>
+                        <td>May 28, 2023</td>
+                        <td>emily.davis@email.com</td>
+                    </tr>
+                    <tr>
+                        <td class="donor-name">Michael Brown</td>
+                        <td><span class="blood-group-badge positive">B+</span></td>
+                        <td>June 10, 2023</td>
+                        <td>michael.brown@email.com</td>
+                    </tr>
+                    <tr>
+                        <td class="donor-name">Jessica Wilson</td>
+                        <td><span class="blood-group-badge positive">AB+</span></td>
+                        <td>May 15, 2023</td>
+                        <td>jessica.wilson@email.com</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="view-all-btn">
+                <i class="fas fa-users"></i>
+                View Donors List
+            </button>
+        </section>
+
+        <!-- Quick Actions Section -->
+        <section class="quick-actions-section">
+            <h2 class="section-title">
+                <i class="fas fa-bolt"></i>
+                Quick Actions
+            </h2>
+
+            <div class="quick-actions-grid">
+                <div class="quick-action-card">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
+                    <div class="quick-action-title">Add/Update Blood Stock</div>
+                    <div class="quick-action-desc">Manage blood inventory</div>
+                </div>
+
+                <div class="quick-action-card">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <div class="quick-action-title">View Blood Requests</div>
+                    <div class="quick-action-desc">Check pending requests</div>
+                </div>
+
+                <div class="quick-action-card">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-ambulance"></i>
+                    </div>
+                    <div class="quick-action-title">Manage Emergency Requests</div>
+                    <div class="quick-action-desc">Handle urgent needs</div>
+                </div>
+
+                <div class="quick-action-card">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="quick-action-title">View Donors</div>
+                    <div class="quick-action-desc">Browse donor database</div>
+                </div>
+
+                <div class="quick-action-card">
+                    <div class="quick-action-icon">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <div class="quick-action-title">Update Hospital Profile</div>
+                    <div class="quick-action-desc">Edit hospital information</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Blood Stock Levels Chart
+        const bloodStockCtx = document.getElementById('bloodStockChart').getContext('2d');
+        const bloodStockChart = new Chart(bloodStockCtx, {
+            type: 'line',
+            data: {
+                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                datasets: [
+                    {
+                        label: 'O+',
+                        data: [480, 475, 490, 485, 500, 495, 520],
+                        borderColor: '#e63946',
+                        backgroundColor: 'rgba(230, 57, 70, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'A+',
+                        data: [400, 395, 405, 410, 405, 415, 420],
+                        borderColor: '#457b9d',
+                        backgroundColor: 'rgba(69, 123, 157, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'B+',
+                        data: [360, 355, 365, 370, 375, 370, 380],
+                        borderColor: '#2a9d8f',
+                        backgroundColor: 'rgba(42, 157, 143, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'AB+',
+                        data: [270, 265, 275, 280, 275, 285, 290],
+                        borderColor: '#e76f51',
+                        backgroundColor: 'rgba(231, 111, 81, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 200,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Blood Type Distribution Chart
+        const bloodTypeCtx = document.getElementById('bloodTypeChart').getContext('2d');
+        const bloodTypeChart = new Chart(bloodTypeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['O+', 'A+', 'B+', 'AB+', 'O-', 'A-', 'B-', 'AB-'],
+                datasets: [{
+                    data: [520, 420, 380, 290, 220, 180, 150, 110],
+                    backgroundColor: [
+                        '#e63946',
+                        '#457b9d',
+                        '#2a9d8f',
+                        '#e76f51',
+                        '#f4a261',
+                        '#264653',
+                        '#a8dadc',
+                        '#e9c46a'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 15
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+
+        // Chart Options Toggle
+        const chartOptions = document.querySelectorAll('.chart-option');
+        chartOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                chartOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+
+                // In a real application, this would update the chart data based on the selected time period
+                // For demo purposes, we'll just show a notification
+                const selectedPeriod = this.textContent;
+                console.log(`Chart period changed to: ${selectedPeriod}`);
+            });
+        });
+
+        // Emergency Button
+        document.querySelector('.emergency-btn').addEventListener('click', function() {
+            // In a real application, this would navigate to the emergency requests page
+            console.log('View Emergency Requests clicked');
+        });
+
+        // View Donors Button
+        document.querySelector('.view-all-btn').addEventListener('click', function() {
+            // In a real application, this would navigate to the donors list page
+            console.log('View Donors List clicked');
+        });
+
+        // Quick Actions Cards
+        document.querySelectorAll('.quick-action-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const actionTitle = this.querySelector('.quick-action-title').textContent;
+                console.log(`Quick action clicked: ${actionTitle}`);
+
+                // In a real application, this would navigate to the respective page or open a modal
+            });
+        });
+
+        // Notification Icon
+        document.querySelector('.notification-icon').addEventListener('click', function() {
+            // In a real application, this would show a dropdown with notifications
+            console.log('Notifications clicked');
+        });
+
+        // Profile Menu
+        document.querySelector('.profile-menu').addEventListener('click', function() {
+            // In a real application, this would show a dropdown with profile options
+            console.log('Profile menu clicked');
+        });
+    </script>
+
+{% endblock %}

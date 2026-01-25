@@ -1,0 +1,100 @@
+.popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    justify-content: center;
+    align-items: flex-start;
+    z-index: 9999;
+}
+
+/* Popup Box */
+.popup-content {
+    background: #fff;
+    width: 100%;
+    max-width: 420px;
+    margin-top: -400px;
+    padding: 35px 30px;
+    border-radius: 16px;
+    border-top: 6px solid #b40000;
+    box-shadow: 0 15px 40px rgba(180, 0, 0, 0.35);
+    animation: slideDown 0.8s ease forwards;
+    position: relative;
+}
+
+/* Slide Animation */
+@keyframes slideDown {
+    from {
+        margin-top: -400px;
+        opacity: 0;
+    }
+    to {
+        margin-top: 80px;
+        opacity: 1;
+    }
+}
+
+/* Close Button */
+.popup-content .close {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-size: 26px;
+    cursor: pointer;
+    color: #b40000;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.popup-content .close:hover {
+    transform: rotate(90deg) scale(1.2);
+    color: #7a0000;
+}
+
+/* Heading */
+.popup-content h2 {
+    color: #b40000;
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* Input Styling */
+.popup-content .form-control {
+    border-radius: 12px;
+    padding: 12px 15px;
+    border: 1.5px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+.popup-content .form-control:focus {
+    border-color: #b40000;
+    box-shadow: 0 0 0 0.2rem rgba(180, 0, 0, 0.25);
+}
+
+/* Login Button */
+.popup-content .btn-primary {
+    background: linear-gradient(135deg, #b40000, #ff4b4b);
+    border: none;
+    border-radius: 50px;
+    padding: 12px;
+    font-weight: 600;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.popup-content .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(180, 0, 0, 0.4);
+}
+
+/* Register Link */
+.popup-content .register-link a {
+    color: #b40000;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.popup-content .register-link a:hover {
+    text-decoration: underline;
+}
+</style>

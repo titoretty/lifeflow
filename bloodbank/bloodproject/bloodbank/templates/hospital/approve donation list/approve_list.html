@@ -1,0 +1,39 @@
+{% extends 'hospital_header.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2 class="mb-4">🩸 Approved Donation Requests</h2>
+
+    {% if donations %}
+    <table class="table table-bordered align-middle">
+        <thead class="table-danger">
+            <tr>
+                <th>Donor Name</th>
+                <th>Blood Group</th>
+                <th>Phone</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in donations %}
+            <tr>
+                <td>{{ d.user_name }}</td>
+                <td>{{ d.blood_group }}</td>
+                <td>{{ d.phone }}</td>
+                <td>
+                    <a href="{% url 'mark_donation' d.id %}"
+                       class="btn btn-primary btn-sm">
+                        Mark Donation
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="alert alert-info">No approved donations</div>
+    {% endif %}
+
+</div>
+{% endblock %}

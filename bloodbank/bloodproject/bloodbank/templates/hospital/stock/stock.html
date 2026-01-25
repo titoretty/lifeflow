@@ -1,0 +1,185 @@
+{% extends 'hospital_header.html' %}
+{% block content %}
+
+<style>
+/* ===== Header Row ===== */
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* ===== Page Title ===== */
+.page-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ===== Add Stock Button ===== */
+.add-stock-btn {
+    padding: 10px 22px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: #fff;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform .3s, box-shadow .3s;
+}
+
+.add-stock-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(231,76,60,.4);
+}
+
+/* ===== Stock Grid ===== */
+.stock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    margin-top: 25px;
+}
+
+/* ===== Stock Card ===== */
+.stock-card {
+    background: linear-gradient(145deg, #ffffff, #f1f1f1);
+    padding: 25px 20px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    text-align: center;
+    animation: popIn 0.6s ease forwards;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stock-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+}
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* ===== Blood Circle ===== */
+.blood-circle {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background: #27ae60;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    animation: pulse 2s infinite;
+}
+
+/* ===== Pulse Animation ===== */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(39,174,96,0.5); }
+    70% { box-shadow: 0 0 0 18px rgba(39,174,96,0); }
+    100% { box-shadow: 0 0 0 0 rgba(39,174,96,0); }
+}
+
+/* ===== Units Text ===== */
+.units {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 12px 0;
+    color: #2c3e50;
+}
+
+/* ===== Status Colors ===== */
+.low {
+    background: #f39c12 !important;
+    animation: pulseLow 2s infinite;
+}
+
+@keyframes pulseLow {
+    0% { box-shadow: 0 0 0 0 rgba(243,156,18,0.5); }
+    70% { box-shadow: 0 0 0 18px rgba(243,156,18,0); }
+    100% { box-shadow: 0 0 0 0 rgba(243,156,18,0); }
+}
+
+.critical {
+    background: #c0392b !important;
+    animation: pulseCritical 1.5s infinite;
+}
+
+@keyframes pulseCritical {
+    0% { box-shadow: 0 0 0 0 rgba(192,57,43,0.6); }
+    70% { box-shadow: 0 0 0 22px rgba(192,57,43,0); }
+    100% { box-shadow: 0 0 0 0 rgba(192,57,43,0); }
+}
+
+/* ===== Footer Info ===== */
+.updated {
+    font-size: 12px;
+    color: #777;
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+    text-align: center;
+    font-size: 16px;
+    color: #777;
+    margin-top: 40px;
+}
+
+/* ===== Responsive ===== */
+@media(max-width: 768px){
+    .page-title {
+        font-size: 22px;
+    }
+}
+</style>
+
+<!-- ===== Header ===== -->
+<div class="header-row">
+    <div class="page-title">🩸 Blood Stock Dashboard</div>
+
+    <!-- ADD STOCK BUTTON -->
+    <a href="{% url 'add_stock' %}" class="add-stock-btn">
+        ➕ Add Stock
+    </a>
+</div>
+
+<!-- ===== Stock Grid ===== -->
+<div class="stock-grid">
+{% for s in stock %}
+    <div class="stock-card">
+
+        <div class="blood-circle
+            {% if s.units < 5 %}
+                critical
+            {% elif s.units < 10 %}
+                low
+            {% endif %}">
+            {{ s.blood_group }}
+        </div>
+
+        <div class="units">{{ s.units }} Units</div>
+
+        <div class="updated">
+            Last updated:<br>
+            {{ s.last_updated|date:"d M Y, h:i A" }}
+        </div>
+
+    </div>
+{% empty %}
+    <div class="empty-state">
+        ⚠ No blood stock data available
+    </div>
+{% endfor %}
+</div>
+
+{% endblock %}

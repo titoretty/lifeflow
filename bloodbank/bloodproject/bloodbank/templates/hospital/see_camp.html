@@ -1,0 +1,196 @@
+{% extends 'hospital_header.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+/* ===== PAGE BACKGROUND ===== */
+body {
+    background: linear-gradient(180deg, #eef6ff, #fdfefe);
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.page-header h1 {
+    color: #1f3c88;
+    font-size: 28px;
+}
+
+.add-btn {
+    background: #e74c3c;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* ===== CAMPS GRID ===== */
+.camp-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+/* ===== CAMP CARD ===== */
+.camp-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.08);
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.camp-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.organizer {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+}
+
+.camp-desc {
+    color: #555;
+    margin: 10px 0 15px;
+}
+
+/* ===== CAMP INFO ===== */
+.camp-info {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    color: #444;
+}
+
+/* ===== STATUS BADGES ===== */
+.badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.active {
+    background: #ff4d4d;
+    color: #fff;
+}
+
+.completed {
+    background: #2ecc71;
+    color: #fff;
+}
+
+/* ===== COMPLETE FORM ===== */
+.complete-form {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.complete-form input {
+    padding: 8px;
+    width: 120px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+.btn-complete {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* ===== COMPLETED TEXT ===== */
+.completed-text {
+    margin-top: 15px;
+    color: #2ecc71;
+    font-weight: bold;
+}
+
+/* ===== RIGHT ILLUSTRATION ===== */
+.side-image {
+    background: url("{% static 'assets/img/img_1.png' %}") no-repeat center;
+    background-size: contain;
+    min-height: 500px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width: 900px) {
+    .camp-grid {
+        grid-template-columns: 1fr;
+    }
+    .side-image {
+        display: none;
+    }
+}
+</style>
+
+<div class="page-header">
+    <h1>🩸 Blood Camps</h1>
+    <a href="{% url 'blood_camp' %}" class="add-btn">+ Add New Camp</a>
+</div>
+
+<div class="camp-grid">
+
+    <!-- LEFT: CAMP LIST -->
+    <div>
+
+        {% for camp in camps %}
+        <div class="camp-card">
+
+            <span class="badge {% if camp.status == 'COMPLETED' %}completed{% else %}active{% endif %}">
+                {{ camp.status }}
+            </span>
+
+            <div class="camp-title">{{ camp.title }}</div>
+            <div class="organizer">Organizer: {{ camp.organizer_name }}</div>
+
+            <div class="camp-desc">{{ camp.description }}</div>
+
+            <div class="camp-info">
+                📍 {{ camp.location }}
+                📅 {{ camp.camp_date }}
+                ⏰ {{ camp.start_time }} - {{ camp.end_time }}
+            </div>
+
+            {% if camp.status != 'COMPLETED' %}
+            <form method="POST" action="{% url 'complete_camp' camp.id %}" class="complete-form">
+                {% csrf_token %}
+                <input type="number" name="donors_count" placeholder="Total Donors" required>
+                <input type="number" name="units_collected" placeholder="Units Collected" required>
+                <button type="submit" class="btn-complete">Mark as Completed</button>
+            </form>
+            {% else %}
+                <div class="completed-text">✔ Camp Completed</div>
+            {% endif %}
+
+        </div>
+        {% empty %}
+            <p>No camps found</p>
+        {% endfor %}
+
+    </div>
+
+    <!-- RIGHT: ILLUSTRATION -->
+    <div class="side-image"></div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,809 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeFlow - Blood Bank Management System</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --oxygen-red: #B40000;
+            --medical-white: #FFFFFF;
+            --slate-gray: #2F2F2F;
+            --light-gray: #F3F3F3;
+            --glass-white: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #FFFFFF;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Elements */
+        .bg-waves {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -2;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg"><path fill="%23B40000" fill-opacity="0.03" d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+            background-size: cover;
+            opacity: 0.4;
+            animation: wave 15s linear infinite;
+        }
+
+        .wave:nth-child(2) {
+            bottom: 10px;
+            opacity: 0.3;
+            animation: wave 10s linear infinite reverse;
+        }
+
+        .wave:nth-child(3) {
+            bottom: 20px;
+            opacity: 0.2;
+            animation: wave 20s linear infinite;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* 3D Microscopic Blood Cells Background */
+        .blood-cells-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .blood-cell {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #ff5555, #990000);
+            box-shadow:
+                0 0 10px rgba(180, 0, 0, 0.2),
+                inset -2px -2px 5px rgba(0, 0, 0, 0.3),
+                inset 2px 2px 5px rgba(255, 100, 100, 0.2);
+            opacity: 0.4;
+            animation: floatCell 20s infinite ease-in-out;
+            transform-style: preserve-3d;
+        }
+
+        .blood-cell::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 30%;
+            height: 30%;
+            background: radial-gradient(circle, rgba(255, 150, 150, 0.4), transparent);
+            border-radius: 50%;
+        }
+
+        .blood-cell.large {
+            width: 60px;
+            height: 60px;
+            animation-duration: 25s;
+        }
+
+        .blood-cell.medium {
+            width: 40px;
+            height: 40px;
+            animation-duration: 20s;
+        }
+
+        .blood-cell.small {
+            width: 25px;
+            height: 25px;
+            animation-duration: 15s;
+        }
+
+        @keyframes floatCell {
+            0% {
+                transform: translate(0, 100vh) rotateX(0deg) rotateY(0deg) scale(0.8);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.4;
+            }
+            50% {
+                transform: translate(30vw, 50vh) rotateX(180deg) rotateY(180deg) scale(1);
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translate(60vw, -100vh) rotateX(360deg) rotateY(360deg) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(180, 0, 0, 0.6), transparent);
+            box-shadow: 0 0 10px rgba(180, 0, 0, 0.3);
+            animation: floatParticle 20s infinite linear;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            position: relative;
+            z-index: 10;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: var(--oxygen-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 15px rgba(180, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .logo i {
+            color: white;
+            font-size: 28px;
+            z-index: 1;
+        }
+
+        .title {
+            font-weight: 700;
+            color: var(--slate-gray);
+            font-size: 2.2rem;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-weight: 400;
+            color: var(--slate-gray);
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        /* Main Content */
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 200px);
+            padding: 20px;
+        }
+
+        /* Neumorphic Card */
+        .neumorphic-card {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            box-shadow:
+                20px 20px 60px rgba(0, 0, 0, 0.1),
+                -20px -20px 60px rgba(255, 255, 255, 0.7),
+                inset 0 0 20px rgba(180, 0, 0, 0.05);
+            border-radius: 30px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            animation: fadeInScale 1s ease-out;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .neumorphic-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--oxygen-red), transparent);
+            animation: glowLine 3s infinite;
+        }
+
+        @keyframes glowLine {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Glass Blood Drop Visual */
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .blood-drop {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            filter: drop-shadow(0 10px 15px rgba(180, 0, 0, 0.2));
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .blood-drop svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .blood-drop .drop-fill {
+            fill: var(--oxygen-red);
+            opacity: 0.7;
+        }
+
+        .blood-drop .drop-outline {
+            fill: none;
+            stroke: var(--oxygen-red);
+            stroke-width: 1.5;
+            opacity: 0.9;
+        }
+
+        /* Role Selection */
+        .role-selection {
+            margin-bottom: 30px;
+        }
+
+        .role-title {
+            font-weight: 600;
+            color: var(--slate-gray);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .role-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .role-option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow:
+                5px 5px 15px rgba(0, 0, 0, 0.05),
+                -5px -5px 15px rgba(255, 255, 255, 0.7);
+        }
+
+        .role-option:hover {
+            transform: translateY(-2px);
+            box-shadow:
+                7px 7px 20px rgba(0, 0, 0, 0.08),
+                -7px -7px 20px rgba(255, 255, 255, 0.8);
+            background: linear-gradient(145deg, #f8f8f8, #e8e8e8);
+        }
+
+        .role-option.selected {
+            background: linear-gradient(145deg, rgba(180, 0, 0, 0.1), rgba(180, 0, 0, 0.05));
+            border-color: var(--oxygen-red);
+            box-shadow:
+                inset 5px 5px 10px rgba(0, 0, 0, 0.05),
+                inset -5px -5px 10px rgba(255, 255, 255, 0.7);
+        }
+
+        .role-option.selected .radio-custom {
+            background-color: var(--oxygen-red);
+            border-color: var(--oxygen-red);
+        }
+
+        .role-option.selected .radio-custom::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: white;
+        }
+
+        .radio-custom {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            margin-right: 15px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .role-icon {
+            margin-right: 15px;
+            color: var(--oxygen-red);
+            font-size: 1.5rem;
+        }
+
+        .role-text {
+            font-weight: 500;
+            color: var(--slate-gray);
+        }
+
+        /* Continue Button */
+        .continue-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-radius: 15px;
+            font-weight: 600;
+            color: var(--slate-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow:
+                5px 5px 15px rgba(0, 0, 0, 0.05),
+                -5px -5px 15px rgba(255, 255, 255, 0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .continue-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(180, 0, 0, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .continue-btn:hover::before {
+            left: 100%;
+        }
+
+        .continue-btn:hover {
+            box-shadow: 0 0 15px rgba(180, 0, 0, 0.2);
+        }
+
+        .continue-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .continue-btn:disabled:hover {
+            box-shadow:
+                5px 5px 15px rgba(0, 0, 0, 0.05),
+                -5px -5px 15px rgba(255, 255, 255, 0.7);
+        }
+
+        .continue-btn.active {
+            background: linear-gradient(145deg, var(--oxygen-red), #d40000);
+            color: white;
+            box-shadow: 0 5px 15px rgba(180, 0, 0, 0.3);
+        }
+
+        .continue-btn.active:hover {
+            box-shadow: 0 0 20px rgba(180, 0, 0, 0.4);
+        }
+
+        /* Tagline */
+        .tagline {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--slate-gray);
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        /* Neon Line Dividers */
+        .neon-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(180, 0, 0, 0.3), transparent);
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .neon-divider::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: neonPulse 3s infinite;
+        }
+
+        @keyframes neonPulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Futuristic Glowing Lines */
+        .glowing-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--oxygen-red), transparent);
+            opacity: 0.3;
+            animation: glowMove 5s infinite linear;
+        }
+
+        @keyframes glowMove {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Bento Layout Elements */
+        .bento-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 1px;
+            pointer-events: none;
+            opacity: 0.05;
+            z-index: 1;
+        }
+
+        .bento-cell {
+            background-color: rgba(180, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .title {
+                font-size: 1.8rem;
+            }
+
+            .neumorphic-card {
+                padding: 30px 20px;
+            }
+
+            .role-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background Waves -->
+    <div class="bg-waves">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <!-- 3D Microscopic Blood Cells -->
+    <div class="blood-cells-container" id="bloodCellsContainer"></div>
+
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div>
+                    <h1 class="title">LifeFlow</h1>
+                    <p class="subtitle">Blood Bank Management System</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="neumorphic-card">
+            <!-- Bento Layout Grid -->
+            <div class="bento-grid">
+                <div class="bento-cell"></div>
+                <div class="bento-cell"></div>
+                <div class="bento-cell"></div>
+                <div class="bento-cell"></div>
+                <div class="bento-cell"></div>
+                <div class="bento-cell"></div>
+                <div class="bento-cell"></div>
+                <div class="bento-cell"></div>
+                <div class="bento-cell"></div>
+            </div>
+
+            <!-- Futuristic Glowing Lines -->
+            <div class="glowing-line" style="top: 20%; width: 100%;"></div>
+            <div class="glowing-line" style="top: 40%; width: 100%; animation-delay: 1s;"></div>
+            <div class="glowing-line" style="top: 60%; width: 100%; animation-delay: 2s;"></div>
+            <div class="glowing-line" style="top: 80%; width: 100%; animation-delay: 3s;"></div>
+
+            <!-- Glass Blood Drop Visual -->
+         <div class="hero-visual">
+    <div class="blood-drop">
+        <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="glassEffectSmall">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/>
+                    <feBlend in="SourceGraphic" in2="blur" mode="normal"/>
+                </filter>
+                <linearGradient id="dropGradientSmall" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#ff4d4d"/>
+                    <stop offset="100%" stop-color="#B40000"/>
+                </linearGradient>
+            </defs>
+
+            <!-- 🔥 BLOOD DROP (SMALL SIZE) -->
+            <path class="drop-fill"
+                d="M50 8
+                C48 22 30 48 30 75
+                C30 105 42 123 50 123
+                C58 123 70 105 70 75
+                C70 48 52 22 50 8 Z"
+                fill="url(#dropGradientSmall)"
+                filter="url(#glassEffectSmall)"/>
+
+            <path class="drop-outline"
+                d="M50 8
+                C48 22 30 48 30 75
+                C30 105 42 123 50 123
+                C58 123 70 105 70 75
+                C70 48 52 22 50 8 Z"
+                fill="none"
+                stroke="#B40000"
+                stroke-width="2"/>
+
+            <ellipse cx="45" cy="30" rx="6" ry="10"
+                fill="rgba(255,255,255,0.4)"
+                transform="rotate(-20 45 30)"/>
+        </svg>
+    </div>
+</div>
+
+            <!-- Neon Line Divider -->
+            <div class="neon-divider"></div>
+
+            <!-- Role Selection -->
+            <div class="role-selection">
+                <h2 class="role-title">Select Role</h2>
+                <div class="role-options">
+                    <div class="role-option" data-role="user">
+                        <div class="radio-custom"></div>
+                        <i class="fas fa-user role-icon"></i>
+                        <span class="role-text">User</span>
+                    </div>
+                    <div class="role-option" data-role="hospital">
+                        <div class="radio-custom"></div>
+                        <i class="fas fa-hospital role-icon"></i>
+                        <span class="role-text">Hospital</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Neon Line Divider -->
+            <div class="neon-divider"></div>
+
+            <!-- Continue Button -->
+            <button class="continue-btn" id="continueBtn" disabled>Continue</button>
+
+            <!-- Tagline -->
+            <p class="tagline">"Connecting Donors, Hospitals & Lives — Instantly"</p>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create 3D blood cells
+            const bloodCellsContainer = document.getElementById('bloodCellsContainer');
+            const cellCount = 15;
+
+            for (let i = 0; i < cellCount; i++) {
+                const cell = document.createElement('div');
+
+                // Random size class
+                const sizeClass = Math.random() < 0.33 ? 'large' : (Math.random() < 0.5 ? 'medium' : 'small');
+                cell.classList.add('blood-cell', sizeClass);
+
+                // Random position
+                cell.style.left = `${Math.random() * 100}%`;
+                cell.style.top = `${Math.random() * 100}%`;
+
+                // Random animation delay
+                cell.style.animationDelay = `${Math.random() * 20}s`;
+
+                // Random animation duration variation
+                const duration = parseFloat(window.getComputedStyle(cell).animationDuration);
+                cell.style.animationDuration = `${duration * (0.8 + Math.random() * 0.4)}s`;
+
+                bloodCellsContainer.appendChild(cell);
+            }
+
+            // Create floating particles
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+
+                // Random size between 2px and 6px
+                const size = Math.random() * 4 + 2;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+
+                // Random animation delay
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+
+                // Random animation duration
+                particle.style.animationDuration = `${Math.random() * 10 + 15}s`;
+
+                particlesContainer.appendChild(particle);
+            }
+
+            // Role selection functionality
+            const roleOptions = document.querySelectorAll('.role-option');
+            const continueBtn = document.getElementById('continueBtn');
+            let selectedRole = null;
+
+            roleOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    roleOptions.forEach(opt => opt.classList.remove('selected'));
+
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+
+                    // Store selected role
+                    selectedRole = this.getAttribute('data-role');
+
+                    // Enable continue button
+                    continueBtn.disabled = false;
+                    continueBtn.classList.add('active');
+                });
+            });
+
+            // Continue button functionality
+            continueBtn.addEventListener('click', function() {
+                if (selectedRole) {
+                    // Redirect based on selected role
+                    if (selectedRole === 'user') {
+                        window.location.href = 'index';
+                    } else if (selectedRole === 'hospital') {
+                        window.location.href = 'hos_register';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

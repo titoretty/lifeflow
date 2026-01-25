@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eligibility Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+        }
+        .card {
+            max-width: 500px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+        .eligible {
+            color: green;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .not-eligible {
+            color: #d10000;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        .info {
+            margin-top: 15px;
+            font-size: 15px;
+        }
+        .btn {
+            margin-top: 20px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            background: #d10000;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn.disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            font-size: 14px;
+        }
+        th {
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>🩸 Donation Eligibility Status</h2>
+
+    {% if can_donate %}
+        <div class="eligible">✅ You are Eligible to Donate</div>
+        <p class="info">You can donate blood now.</p>
+
+        <a href="{% url 'donate' %}" class="btn">Donate Blood</a>
+
+    {% else %}
+        <div class="not-eligible">❌ Not Eligible to Donate</div>
+
+        <p class="info">
+            <b>Last Donation:</b> {{ user.last_donation_date }} <br>
+            <b>Next Eligible Date:</b> {{ next_eligible_date }} <br>
+            <b>Remaining Days:</b> {{ remaining_days }}
+        </p>
+
+        <button class="btn disabled">Not Eligible</button>
+    {% endif %}
+
+    {% if donation_history %}
+    <h3 style="margin-top:25px;">Recent Donations</h3>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Hospital</th>
+            <th>Units</th>
+        </tr>
+        {% for d in donation_history %}
+        <tr>
+            <td>{{ d.donation_date }}</td>
+            <td>{{ d.hospital.name }}</td>
+            <td>{{ d.units }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <a href="{% url 'index' %}" class="btn" style="margin-top:15px;">Back to Home</a>
+</div>
+
+</body>
+</html>

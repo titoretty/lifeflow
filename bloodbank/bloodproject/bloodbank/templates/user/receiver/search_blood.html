@@ -1,0 +1,108 @@
+{% extends 'header.html' %}
+{% block title %}Search Blood | LifeFlow{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+
+    <!-- Page Heading -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-danger">
+            <i class="fas fa-tint"></i> Search Blood Availability
+        </h2>
+        <p class="text-muted">Find hospitals with required blood group</p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3 justify-content-center">
+
+                <!-- Blood Group -->
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold">Blood Group</label>
+                    <select name="blood_group" class="form-select" required>
+                        <option value="">-- Select --</option>
+                        {% for bg in blood_groups %}
+                        <option value="{{ bg }}" {% if selected_group == bg %}selected{% endif %}>
+                            {{ bg }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Urgency -->
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Urgency</label>
+                    <select name="urgency" class="form-select">
+                        <option value="">Normal</option>
+                        <option value="emergency"
+                            {% if selected_urgency == 'emergency' %}selected{% endif %}>
+                            Emergency
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Submit -->
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <h4 class="mb-3">
+        <i class="fas fa-hospital"></i> Available Hospitals
+    </h4>
+
+    {% if hospitals %}
+    <div class="row">
+
+        {% for h in hospitals %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+
+                    <!-- Hospital Name -->
+                    <h5 class="text-danger fw-bold mb-2">
+                        {{ h.hospital_name }}
+                    </h5>
+
+                    <!-- Address -->
+                    <p class="mb-1 text-muted">
+                        <i class="fas fa-map-marker-alt"></i>
+                        {{ h.address }}, {{ h.district }}
+                    </p>
+
+                    <!-- Contact -->
+                    <p class="mb-3 text-muted">
+                        <i class="fas fa-phone"></i>
+                        {{ h.contact_number }}
+                    </p>
+
+                    <!-- Action -->
+                    <a href="{% url 'request_blood' h.id %}"
+                       class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-hand-holding-medical"></i>
+                        Request Blood
+                    </a>
+
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+    <div class="alert alert-warning text-center">
+        <i class="fas fa-exclamation-circle"></i>
+        No hospitals found
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

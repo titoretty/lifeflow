@@ -1,0 +1,662 @@
+{% extends 'hospital_header.html' %}
+{% block content %}
+
+<style>
+/* ================= BACKGROUND ANIMATION ================= */
+body {
+    background: linear-gradient(270deg, #ffffff, #f8f8f8, #fff5f5);
+    background-size: 600% 600%;
+    animation: gradientBG 16s ease infinite;
+    overflow-x: hidden;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Floating shapes */
+.bg-shapes span {
+    position: fixed;
+    width: 60px;
+    height: 60px;
+    background: rgba(220, 53, 69, 0.1);
+    border-radius: 50%;
+    animation: float 25s linear infinite;
+    z-index: 0;
+}
+
+.bg-shapes span:nth-child(1){left:10%; animation-duration:30s;}
+.bg-shapes span:nth-child(2){left:35%; background:rgba(220, 53, 69, 0.15);}
+.bg-shapes span:nth-child(3){left:65%; width:80px; height:80px;}
+.bg-shapes span:nth-child(4){left:85%; background:rgba(220, 53, 69, 0.08);}
+
+@keyframes float {
+    0% { bottom:-120px; transform:rotate(0deg); }
+    100% { bottom:120%; transform:rotate(360deg); }
+}
+
+/* ================= LAYOUT ================= */
+.main-container {
+    display: flex;
+    max-width: 1600px;
+    margin: auto;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+    gap: 20px;
+}
+
+.content-container {
+    flex: 1;
+}
+
+.side-panel {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #dc3545;
+    font-size: 28px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h2:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(to right, #dc3545, #a02530);
+    border-radius: 3px;
+}
+
+/* ================= CONTROLS ================= */
+.controls {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(220, 53, 69, 0.1);
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    border: 1px solid #f5c6cb;
+}
+
+.search-box {
+    flex: 1;
+    position: relative;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    transition: all 0.3s;
+    background-color: #fff;
+}
+
+.search-box input:focus {
+    border-color: #dc3545;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.search-box::before {
+    content: "🔍";
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.filter-group select {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #f5c6cb;
+    transition: all 0.3s;
+    background-color: #fff;
+}
+
+.filter-group select:focus {
+    border-color: #dc3545;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* ================= TABLE ================= */
+.table-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(220, 53, 69, 0.1);
+    overflow: hidden;
+    border: 1px solid #f5c6cb;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 15px;
+    border-bottom: 1px solid #f5c6cb;
+}
+
+th {
+    background: #fff5f5;
+    text-align: left;
+    font-weight: 600;
+    color: #dc3545;
+}
+
+/* ================= ANIMATED TABLE BODY ================= */
+
+/* Avatar */
+.avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #dc3545, #a02530);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 10px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+}
+
+.receiver-cell {
+    display: flex;
+    align-items: center;
+}
+
+/* Blood badge */
+.blood-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: #dc3545;
+    color: #fff;
+    font-weight: bold;
+    animation: floatBadge 3s ease-in-out infinite;
+}
+
+@keyframes floatBadge {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* Emergency heartbeat */
+tr.emergency-row {
+    animation: heartbeat 1.5s infinite;
+}
+
+@keyframes heartbeat {
+    0% { background: rgba(220, 53, 69, 0.05); }
+    50% { background: rgba(220, 53, 69, 0.15); }
+    100% { background: rgba(220, 53, 69, 0.05); }
+}
+
+.emergency { color:#dc3545; font-weight:bold; }
+.normal { color:#6c757d; }
+
+/* Status */
+.status-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pending { background:#fff3cd; color:#856404; }
+.approved { background:#d4edda; color:#155724; }
+.rejected { background:#f8d7da; color:#721c24; }
+
+/* Buttons */
+.actions { display:flex; gap:8px; }
+
+.btn {
+    padding: 8px 14px;
+    border-radius: 4px;
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-approve { background:#28a745; }
+.btn-approve:hover:not(.disabled) { background:#218838; }
+
+.btn-reject { background:#dc3545; }
+.btn-reject:hover:not(.disabled) { background:#a02530; }
+
+.btn.disabled {
+    opacity:.5;
+    pointer-events:none;
+}
+
+/* ================= SIDE PANELS ================= */
+.info-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(220, 53, 69, 0.1);
+    overflow: hidden;
+    border: 1px solid #f5c6cb;
+}
+
+.info-card-header {
+    padding: 15px;
+    background: linear-gradient(to right, #dc3545, #a02530);
+    color: white;
+    font-weight: 600;
+}
+
+.info-card-body {
+    padding: 15px;
+}
+
+.blood-types {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.blood-type {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 4px;
+    background: #fff5f5;
+    border: 1px solid #f5c6cb;
+}
+
+.blood-type-icon {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    margin-right: 8px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.blood-type-info {
+    flex: 1;
+}
+
+.blood-type-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #dc3545;
+}
+
+.blood-type-count {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    background: #fff5f5;
+    border: 1px solid #f5c6cb;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #dc3545;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #6c757d;
+    margin-top: 5px;
+}
+
+.image-card {
+    position: relative;
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #f5c6cb;
+}
+
+.image-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background: linear-gradient(to top, rgba(220, 53, 69, 0.9), transparent);
+    color: white;
+}
+
+.image-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.image-description {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* ================= RESPONSIVE ================= */
+@media(max-width:1200px){
+    .side-panel {
+        width: 220px;
+    }
+}
+
+@media(max-width:992px){
+    .main-container {
+        flex-direction: column;
+    }
+
+    .side-panel {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+    }
+
+    .info-card {
+        min-width: 280px;
+    }
+}
+
+@media(max-width:768px){
+    table, thead, tbody, th, td, tr { display:block; }
+    thead { display:none; }
+
+    tr {
+        background:#fff;
+        margin-bottom:15px;
+        border-radius:8px;
+        padding:12px;
+        box-shadow:0 2px 10px rgba(220, 53, 69, 0.1);
+        border: 1px solid #f5c6cb;
+    }
+
+    td {
+        border:none;
+        padding:6px 0;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight:bold;
+        display:block;
+        color:#dc3545;
+    }
+
+    .side-panel {
+        flex-direction: column;
+    }
+}
+</style>
+
+<!-- Floating background -->
+<div class="bg-shapes">
+    <span></span><span></span><span></span><span></span>
+</div>
+
+<div class="main-container">
+    <div class="content-container">
+        <h2>Receiver Blood Requests</h2>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search receiver or blood group">
+            </div>
+
+            <div class="filter-group">
+                <select id="urgencyFilter">
+                    <option value="">All Urgency</option>
+                    <option value="EMERGENCY">Emergency</option>
+                    <option value="NORMAL">Normal</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="APPROVED">Approved</option>
+                    <option value="REJECTED">Rejected</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Receiver</th>
+                        <th>Blood Group</th>
+                        <th>Units</th>
+                        <th>Urgency</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for req in requests %}
+                    <tr class="{% if req.urgency == 'EMERGENCY' %}emergency-row{% endif %}"
+                        data-name="{{ req.user.full_name }}"
+                        data-blood="{{ req.blood_group }}"
+                        data-urgency="{{ req.urgency }}"
+                        data-status="{{ req.status }}">
+
+                        <td data-label="Receiver">
+                            <div class="receiver-cell">
+                                <div class="avatar">{{ req.user.full_name|slice:":1" }}</div>
+                                {{ req.user.full_name }}
+                            </div>
+                        </td>
+
+                        <td data-label="Blood Group">
+                            <span class="blood-badge">{{ req.blood_group }}</span>
+                        </td>
+
+                        <td data-label="Units">🧪 {{ req.units }}</td>
+
+                        <td data-label="Urgency" class="{% if req.urgency == 'EMERGENCY' %}emergency{% else %}normal{% endif %}">
+                            {% if req.urgency == 'EMERGENCY' %}🚨 Emergency{% else %}Normal{% endif %}
+                        </td>
+
+                        <td data-label="Status">
+                            <span class="status-badge {{ req.status|lower }}">{{ req.status }}</span>
+                        </td>
+
+                        <td data-label="Action" class="actions">
+                            <a href="{% url 'approve_receiver' req.id %}" class="btn btn-approve {% if req.status != 'PENDING' %}disabled{% endif %}">Approve</a>
+                            <a href="{% url 'reject_receiver' req.id %}" class="btn btn-reject {% if req.status != 'PENDING' %}disabled{% endif %}">Reject</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6">No blood requests found</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="side-panel">
+        <!-- Blood Bank Statistics -->
+        <div class="info-card">
+            <div class="info-card-header">Blood Bank Statistics</div>
+            <div class="info-card-body">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">247</div>
+                        <div class="stat-label">Total Donors</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">523</div>
+                        <div class="stat-label">Total Units</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">18</div>
+                        <div class="stat-label">Emergency</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">42</div>
+                        <div class="stat-label">This Month</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blood Types Availability -->
+        <div class="info-card">
+            <div class="info-card-header">Blood Types Availability</div>
+            <div class="info-card-body">
+                <div class="blood-types">
+                    <div class="blood-type">
+                        <div class="blood-type-icon">A+</div>
+                        <div class="blood-type-info">
+                            <div class="blood-type-name">A+</div>
+                            <div class="blood-type-count">42 units</div>
+                        </div>
+                    </div>
+                    <div class="blood-type">
+                        <div class="blood-type-icon">A-</div>
+                        <div class="blood-type-info">
+                            <div class="blood-type-name">A-</div>
+                            <div class="blood-type-count">18 units</div>
+                        </div>
+                    </div>
+                    <div class="blood-type">
+                        <div class="blood-type-icon">B+</div>
+                        <div class="blood-type-info">
+                            <div class="blood-type-name">B+</div>
+                            <div class="blood-type-count">37 units</div>
+                        </div>
+                    </div>
+                    <div class="blood-type">
+                        <div class="blood-type-icon">B-</div>
+                        <div class="blood-type-info">
+                            <div class="blood-type-name">B-</div>
+                            <div class="blood-type-count">12 units</div>
+                        </div>
+                    </div>
+                    <div class="blood-type">
+                        <div class="blood-type-icon">O+</div>
+                        <div class="blood-type-info">
+                            <div class="blood-type-name">O+</div>
+                            <div class="blood-type-count">68 units</div>
+                        </div>
+                    </div>
+                    <div class="blood-type">
+                        <div class="blood-type-icon">O-</div>
+                        <div class="blood-type-info">
+                            <div class="blood-type-name">O-</div>
+                            <div class="blood-type-count">8 units</div>
+                        </div>
+                    </div>
+                    <div class="blood-type">
+                        <div class="blood-type-icon">AB+</div>
+                        <div class="blood-type-info">
+                            <div class="blood-type-name">AB+</div>
+                            <div class="blood-type-count">24 units</div>
+                        </div>
+                    </div>
+                    <div class="blood-type">
+                        <div class="blood-type-icon">AB-</div>
+                        <div class="blood-type-info">
+                            <div class="blood-type-name">AB-</div>
+                            <div class="blood-type-count">6 units</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blood Donation Image -->
+        <div class="image-card">
+            <img src="https://picsum.photos/seed/blooddonation/400/200.jpg" alt="Blood Donation">
+            <div class="image-overlay">
+                <div class="image-title">Save Lives</div>
+                <div class="image-description">One donation can save up to three lives</div>
+            </div>
+        </div>
+
+        <!-- Upcoming Blood Camp -->
+        <div class="info-card">
+            <div class="info-card-header">Upcoming Blood Camp</div>
+            <div class="info-card-body">
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <div style="width: 50px; height: 50px; background: #fff5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; border: 1px solid #f5c6cb;">
+                        <span style="font-size: 24px;">📅</span>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; color: #dc3545;">Community Blood Drive</div>
+                        <div style="font-size: 14px; color: #6c757d;">June 15, 2023</div>
+                    </div>
+                </div>
+                <div style="font-size: 14px; color: #6c757d;">
+                    City Hospital, Main Hall<br>
+                    9:00 AM - 5:00 PM
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterRequests(){
+    const s = searchInput.value.toLowerCase();
+    const u = urgencyFilter.value;
+    const st = statusFilter.value;
+
+    document.querySelectorAll("tbody tr").forEach(row=>{
+        const show =
+            (row.dataset.name.toLowerCase().includes(s) ||
+             row.dataset.blood.toLowerCase().includes(s)) &&
+            (!u || row.dataset.urgency === u) &&
+            (!st || row.dataset.status === st);
+
+        row.style.display = show ? "" : "none";
+    });
+}
+
+searchInput.onkeyup = filterRequests;
+urgencyFilter.onchange = filterRequests;
+statusFilter.onchange = filterRequests;
+</script>
+
+{% endblock %}

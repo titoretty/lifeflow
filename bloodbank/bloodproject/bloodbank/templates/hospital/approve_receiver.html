@@ -1,0 +1,254 @@
+{% extends 'hospital_header.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* ===== PAGE WRAPPER ===== */
+.approve-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    animation: fadeUp 0.6s ease;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== CARD ===== */
+.approve-card {
+    background: #fff;
+    width: 100%;
+    max-width: 560px;
+    padding: 28px;
+    border-radius: 18px;
+    box-shadow: 0 14px 45px rgba(0,0,0,0.18);
+    position: relative;
+}
+
+/* top blood strip */
+.approve-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg, #d10000, #ff6b6b);
+}
+
+/* ===== TITLE ===== */
+.approve-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #b71c1c;
+    margin-bottom: 18px;
+}
+
+/* ===== INFO BOX ===== */
+.info-box {
+    background: #fff5f5;
+    border-left: 5px solid #d32f2f;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.info-box p {
+    margin: 6px 0;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.emergency {
+    background: #ffebee;
+    color: #d32f2f;
+}
+
+.badge.normal {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+/* ===== FORM ===== */
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+input[type="date"],
+select {
+    width: 100%;
+    padding: 11px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #d10000;
+    box-shadow: 0 0 0 3px rgba(209,0,0,0.15);
+}
+
+/* ===== CHECKBOX ===== */
+.confirm-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f9f9f9;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+/* ===== BUTTONS ===== */
+.action-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-top: 22px;
+}
+
+.approve-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 6px 20px rgba(46,125,50,0.4);
+}
+
+.approve-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(46,125,50,0.6);
+}
+
+.cancel-link {
+    text-decoration: none;
+    font-weight: 600;
+    color: #555;
+    transition: 0.3s;
+}
+
+.cancel-link:hover {
+    color: #d10000;
+}
+
+/* ===== FOOT NOTE ===== */
+.note {
+    margin-top: 18px;
+    background: #f1f8ff;
+    border-left: 4px solid #1976d2;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #444;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .approve-card {
+        padding: 22px;
+    }
+}
+</style>
+
+<div class="approve-wrapper">
+
+    <div class="approve-card">
+
+        <h2 class="approve-title">🩸 Approve Blood Request</h2>
+
+        <!-- RECEIVER INFO -->
+        <div class="info-box">
+            <p><b>Receiver:</b> {{ req.user.full_name }}</p>
+            <p><b>Blood Group:</b> {{ req.blood_group }}</p>
+            <p><b>Units Required:</b> {{ req.units }}</p>
+            <p>
+                <b>Urgency:</b>
+                {% if req.urgency == 'EMERGENCY' %}
+                    <span class="badge emergency">🚨 Emergency</span>
+                {% else %}
+                    <span class="badge normal">Normal</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- USER PREFERENCE -->
+        <div class="info-box">
+            <p><b>User Preferred Date:</b> {{ req.preferred_date }}</p>
+            <p><b>User Preferred Time:</b> {{ req.preferred_time }}</p>
+        </div>
+
+        <!-- FORM -->
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Hospital Assigned Date</label>
+                <input type="date"
+                       name="assigned_date"
+                       min="{{ today|date:'Y-m-d' }}"
+                       value="{{ req.preferred_date }}"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label>Hospital Time Slot</label>
+                <select name="time_slot" required>
+                    <option value="">-- Select Time Slot --</option>
+                    {% for t in time_slots %}
+                        <option value="{{ t }}">{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="confirm-box">
+                <input type="checkbox" required>
+                <span>Preferred time confirm cheythu kodukkan pattum</span>
+            </div>
+
+            <div class="action-row">
+                <button type="submit" class="approve-btn">
+                    ✅ Approve Request
+                </button>
+
+                <a href="{% url 'receiver_requests' %}" class="cancel-link">
+                    Cancel
+                </a>
+            </div>
+        </form>
+
+        <div class="note">
+            ℹ️ Approval will notify the receiver immediately with the assigned
+            date and time. Please ensure stock and staff availability.
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

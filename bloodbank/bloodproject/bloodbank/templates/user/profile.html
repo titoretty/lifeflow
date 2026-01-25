@@ -1,0 +1,99 @@
+{% extends "header.html" %}
+
+{% block title %}My Profile | LifeFlow{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <!-- PROFILE ICON -->
+                    <div class="rounded-circle bg-danger text-white
+                                d-flex justify-content-center align-items-center
+                                mx-auto mb-3"
+                         style="width:90px;height:90px;font-size:36px;font-weight:600;">
+                        {{ user.full_name|slice:":1"|upper }}
+                    </div>
+
+                    <h3 class="mb-1">{{ user.full_name }}</h3>
+                    <p class="text-muted">Registered Blood Donor</p>
+
+                    <hr>
+                    <!-- BASIC DETAILS -->
+                    <div class="text-start px-4">
+                        <p><strong>Email:</strong> {{ user.email }}</p>
+                        <p><strong>Phone:</strong> {{ user.phone }}</p>
+                        <p><strong>Address:</strong> {{ user.address }}</p>
+                        <p><strong>City:</strong> {{ user.city }}</p>
+                        <p><strong>District:</strong> {{ user.district }}</p>
+                        <p><strong>Gender:</strong> {{ user.gender }}</p>
+                        <p><strong>Blood Group:</strong>
+                            <span class="badge bg-danger">{{ user.blood_group }}</span>
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <!-- 🩸 SLOGAN SECTION -->
+                    <div class="text-start px-4">
+                        <h5 class="text-danger mb-2">
+                            ❤️ My Donation Slogan
+                        </h5>
+
+                        {% if user.slogan_question %}
+                            <p class="fst-italic">
+                                "{{ user.slogan_question }}"
+                            </p>
+                        {% else %}
+                            <p class="text-muted">
+                                No slogan added yet.
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <hr>
+
+<!--                    &lt;!&ndash; DONATION READINESS &ndash;&gt;-->
+<!--                    <div class="text-start px-4">-->
+<!--                        <h5 class="text-danger mb-2">-->
+<!--                            🩸 Donation Readiness-->
+<!--                        </h5>-->
+
+<!--                        <p>-->
+<!--                            <strong>Eligible Now:</strong>-->
+<!--                            {% if user.is_eligible_now == "Yes" %}-->
+<!--                                <span class="text-success fw-bold">Yes</span>-->
+<!--                            {% else %}-->
+<!--                                <span class="text-danger fw-bold">No</span>-->
+<!--                            {% endif %}-->
+<!--                        </p>-->
+
+<!--                        <p>-->
+<!--                            <strong>Weight above 50kg:</strong>-->
+<!--                            {{ user.weight_above_50kg }}-->
+<!--                        </p>-->
+
+<!--                        <p>-->
+<!--                            <strong>Ready for Emergency:</strong>-->
+<!--                            {{ user.ready_for_emergency }}-->
+<!--                        </p>-->
+
+<!--                        <p>-->
+<!--                            <strong>Last Donation Date:</strong>-->
+<!--                            {{ user.last_donation_date|default:"Not donated yet" }}-->
+<!--                        </p>-->
+<!--                    </div>-->
+
+                    <a href="{% url 'edit_profile' %}" class="btn btn-danger mt-4">
+                        <i class="fas fa-edit me-1"></i> Edit Profile
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

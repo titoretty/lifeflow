@@ -1,0 +1,112 @@
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeFlow - Blood Bank Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'assets/css/user_login.css' %}">
+
+</head>
+
+    <!-- Navigation -->
+    {% block content %}
+    <!-- Login Form -->
+    <div class="login-container">
+        <div class="login-form">
+            <div class="blood-drop-icon">
+                <i class="fas fa-tint"></i>
+            </div>
+            <h2>Welcome Back</h2>
+            <p class="text-center mb-4">Login to your LifeFlow account</p>
+
+            <div id="loginAlert" class="alert" style="display: none;"></div>
+
+            <form method="post" action="{% url 'user_login' %}">
+    {% csrf_token %}
+    <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+    </div>
+
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Login</button>
+</form>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-danger mt-2">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+            <div class="register-link">
+                <p>Don't have an account? <a href="{% url 'user_register' %}">Register here</a></p>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+ <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const loginButton = loginForm.querySelector('button[type="submit"]');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+
+    loginForm.addEventListener('submit', function(e) {
+        // Reset previous error messages
+        const existingAlerts = document.querySelectorAll('.alert');
+        existingAlerts.forEach(alert => {
+            if (!alert.classList.contains('server-message')) { // keep server messages
+                alert.remove();
+            }
+        });
+
+        let isValid = true;
+
+        if (!emailInput.value.trim()) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger';
+            alertDiv.textContent = 'Please enter your email.';
+            loginForm.prepend(alertDiv);
+            isValid = false;
+        }
+
+        if (!passwordInput.value.trim()) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-danger';
+            alertDiv.textContent = 'Please enter your password.';
+            loginForm.prepend(alertDiv);
+            isValid = false;
+        }
+
+        if (!isValid) {
+            e.preventDefault(); // stop form submit if invalid
+            return;
+        }
+
+        // Show loader effect
+        loginButton.disabled = true;
+        const originalText = loginButton.textContent;
+        loginButton.textContent = 'Logging in...';
+
+        // Allow form to submit normally to Django view
+        // Form submission will redirect to slogan if credentials are correct
+    });
+});
+</script>
+
+{% endblock %}

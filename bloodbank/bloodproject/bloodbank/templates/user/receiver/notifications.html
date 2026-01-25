@@ -1,0 +1,15 @@
+{% extends 'header.html' %}
+{% block content %}
+
+<h2>Notifications</h2>
+
+{% for n in notifications %}
+<div style="border:1px solid green; padding:10px; margin-bottom:10px;">
+    <pre>{{ n.message }}</pre>
+    <small>{{ n.created_at }}</small>
+</div>
+{% empty %}
+<p>No notifications</p>
+{% endfor %}
+
+{% endblock %}
