@@ -46,35 +46,56 @@ def register(request):
         # ================= BASIC REQUIRED CHECK =================
         if not all([full_name, email, phone, password, cpassword,
                     address, city, district, gender, blood_group]):
-            messages.error(request, "All fields are required")
+            messages.error(
+                request, 
+                "📋 Incomplete Information - Please fill in all required fields to complete your registration. Every detail helps us serve you better!"
+            )
             return render(request, 'user/user_register.html')
 
         # ================= EMAIL VALIDATION =================
         if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', email):
-            messages.error(request, "Enter a valid email address")
+            messages.error(
+                request, 
+                "📧 Invalid Email Format - Please enter a valid email address (e.g., yourname@example.com). We'll use this to keep you updated!"
+            )
             return render(request, 'user/user_register.html')
 
         # ================= PHONE VALIDATION =================
         if not re.match(r'^[6-9]\d{9}$', phone):
-            messages.error(request, "Enter a valid 10-digit mobile number")
+            messages.error(
+                request, 
+                "📱 Invalid Phone Number - Please enter a valid 10-digit Indian mobile number starting with 6, 7, 8, or 9."
+            )
             return render(request, 'user/user_register.html')
 
         # ================= PASSWORD VALIDATION =================
         if len(password) < 6:
-            messages.error(request, "Password must be at least 6 characters")
+            messages.error(
+                request, 
+                "🔐 Weak Password - Your password must be at least 6 characters long for better security. Please choose a stronger password."
+            )
             return render(request, 'user/user_register.html')
 
         if password != cpassword:
-            messages.error(request, "Passwords do not match")
+            messages.error(
+                request, 
+                "🔄 Password Mismatch - The passwords you entered don't match. Please make sure both password fields are identical."
+            )
             return render(request, 'user/user_register.html')
 
         # ================= DUPLICATE CHECK =================
         if user_registerdb.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered")
+            messages.error(
+                request, 
+                "✉️ Email Already Registered - This email is already associated with an account. Please login instead or use a different email address."
+            )
             return render(request, 'user/user_register.html')
 
         if user_registerdb.objects.filter(phone=phone).exists():
-            messages.error(request, "Phone number already registered")
+            messages.error(
+                request, 
+                "📞 Phone Number Already Registered - This phone number is already in use. Please login or use a different number."
+            )
             return render(request, 'user/user_register.html')
 
         # ================= SAVE USER =================
@@ -92,7 +113,10 @@ def register(request):
         )
         request.session['new_user'] = True
 
-        messages.success(request, "Registration successful! Please login.")
+        messages.success(
+            request, 
+            f"🎉 Welcome to LifeFlow, {full_name}! Your registration is complete. Please login with your credentials to start your journey of saving lives!"
+        )
         return redirect('user_login')
 
     return render(request, 'user/user_register.html')
@@ -274,7 +298,10 @@ def hos_register(request):
         blood_groups = request.POST.getlist('blood_groups')
 
         if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
+            messages.error(
+                request, 
+                "⚠️ Username Already Taken - This username is already registered in our system. Please choose a different username or contact support if you already have an account."
+            )
             return redirect('hos_register')
 
         user = User.objects.create_user(
@@ -297,9 +324,9 @@ def hos_register(request):
             is_approved=False  # 🔒 WAIT ADMIN
         )
 
-        messages.success(
+        messages.warning(
             request,
-            "Hospital registered successfully. Await admin approval."
+            f"✨ Registration Successful! Welcome aboard, {hospital_name}. Your application is now under review by our administrative team. We'll notify you once your account is approved. Meanwhile, keep your login credentials safe!"
         )
         return redirect('hos_login')
 
@@ -332,21 +359,34 @@ def hos_login(request):
             try:
                 hospital = Hospital.objects.get(user=user)
             except Hospital.DoesNotExist:
-                messages.error(request, "No hospital account found")
-                return redirect('hos_login')
+                messages.error(
+                    request, 
+                    "🏥 Account Not Found - No hospital account is linked to these credentials. Please contact support if you believe this is an error."
+                )
+                return render(request, 'hospital/hos_login.html')
 
             if not hospital.is_approved:
                 messages.error(
                     request,
-                    "Your hospital is not approved by admin yet."
+                    "🔒 Login Failed - Your admin approval is pending. Your hospital registration is currently under review. Please wait for admin approval before attempting to login."
                 )
-                return redirect('hos_login')
+                return render(request, 'hospital/hos_login.html')
 
             login(request, user)
             request.session['hospital_id'] = hospital.id
+            messages.success(
+                request, 
+                f"🎉 Welcome back, {hospital.hospital_name}! You have successfully logged into your dashboard."
+            )
             return redirect('hos_index')
 
-        messages.error(request, "Invalid username or password")
+        messages.error(
+            request, 
+            "🔒 Authentication Failed - The username or password you entered is incorrect. Please double-check your credentials and try again."
+        )
+        return render(request, 'hospital/hos_login.html')
+
+    return render(request, 'hospital/hos_login.html')
 
     return render(request, 'hospital/hos_login.html')
 NEARBY_DISTRICTS = {
@@ -685,13 +725,14 @@ def hos_login(request):
             try:
                 hospital = Hospital.objects.get(user=user)
                 request.session['hospital_id'] = hospital.id  # store hospital_id in session
+                messages.success(request, "Login successful!")
+                return redirect('hos_index')  # redirect to dashboard after login
             except Hospital.DoesNotExist:
                 messages.error(request, "No hospital account found for this user")
-                return redirect('hos_login')
-
-            return redirect('hos_index')  # redirect to dashboard after login
+                return render(request, 'hospital/hos_login.html')
         else:
             messages.error(request, "Invalid username or password")
+            return render(request, 'hospital/hos_login.html')
 
     return render(request, 'hospital/hos_login.html')
 def blood_camp(request):

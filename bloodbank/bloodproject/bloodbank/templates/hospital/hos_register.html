@@ -552,6 +552,35 @@
                         <p class="form-subtitle">Join our network of healthcare providers to save lives together</p>
                     </div>
 
+                    <!-- Toast Notifications -->
+                    <div class="toast-container position-fixed top-0 end-0 p-3">
+                        {% if messages %}
+                        {% for message in messages %}
+                        <div class="toast show" role="alert">
+                            <div class="toast-header 
+                                {% if message.tags == 'error' %}bg-danger
+                                {% elif message.tags == 'warning' %}bg-warning
+                                {% else %}bg-success{% endif %}">
+                                
+                                {% if message.tags == 'error' %}
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                <strong class="me-auto">Registration Error</strong>
+                                {% elif message.tags == 'warning' %}
+                                <i class="fas fa-clock me-2"></i>
+                                <strong class="me-auto">Pending Approval</strong>
+                                {% else %}
+                                <i class="fas fa-check-circle me-2"></i>
+                                <strong class="me-auto">Success</strong>
+                                {% endif %}
+                                
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                            </div>
+                            <div class="toast-body">{{ message }}</div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+
                     <!-- Form Steps Indicator -->
                     <div class="form-steps">
                         <div class="step active">
@@ -816,6 +845,16 @@
     <!-- Custom JavaScript -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Auto-show toasts
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach(toast => {
+                // Warning messages stay longer (10 seconds)
+                const isWarning = toast.querySelector('.bg-warning');
+                const delay = isWarning ? 10000 : 5000;
+                const bsToast = new bootstrap.Toast(toast, { autohide: true, delay: delay });
+                bsToast.show();
+            });
+
             // Get DOM elements
             const form = document.getElementById('hospitalRegistrationForm');
             const nextToStep2Btn = document.getElementById('nextToStep2');
