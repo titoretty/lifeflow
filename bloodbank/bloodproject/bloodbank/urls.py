@@ -2,17 +2,22 @@ from django.urls import path
 from . import views   # <-- correct
 
 urlpatterns = [
-    path('', views.welcome, name='welcome'),
+    path('', views.landing, name='landing'),
+    path('welcome/', views.welcome, name='welcome'),
+ path('gallery/', views.gallery, name='gallery'),
     path('index', views.index, name='index'),
     path('about/', views.about, name='about'),
     path("slogan/", views.slogan, name="slogan"),
     path('logout/', views.logout_view, name='logout'),
     path('header/', views.header, name='header'),
+    path('contact/', views.contact, name='contact'),
    #user
     path('user_register', views.user_register, name='user_register'),
     path("user_login/", views.user_login, name="user_login"),
     path('register/', views.register, name='register'),
     path("Donate_blood/<int:hospital_id>/", views.Donate_blood, name="Donate_blood"),
+
+path('camp_announce/', views.camp_announce, name='camp_announce'),
 
     #hospital
     path('hos_register', views.hos_register, name='hos_register'),
@@ -67,5 +72,7 @@ urlpatterns = [
     path('admin_users/', views.admin_users, name='admin_users'),
     path('admin_hospitals/', views.admin_hospitals, name='admin_hospitals'),
     path('admin_header/', views.admin_header, name='admin_header'),
+
+    
 
 ]

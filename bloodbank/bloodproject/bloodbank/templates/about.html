@@ -1,779 +1,493 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About LifeFlow - Giving Life Through Blood Donation</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --blood-red: #e53935;
-            --blood-light-red: #ffcdd2;
-            --blood-dark-red: #b71c1c;
-            --white: #ffffff;
-            --light-gray: #f5f5f5;
-            --medium-gray: #e0e0e0;
-            --dark-gray: #424242;
-            --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--light-gray);
-            color: var(--dark-gray);
-            line-height: 1.6;
-        }
-
-        /* Header Styles */
-        .header {
-            background-color: var(--white);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar-brand {
-            color: var(--blood-red);
-            font-weight: 700;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar-brand i {
-            margin-right: 8px;
-            font-size: 1.8rem;
-        }
-
-        .navbar-nav .nav-link {
-            color: var(--dark-gray);
-            font-weight: 500;
-            margin: 0 10px;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-nav .nav-link:hover {
-            color: var(--blood-red);
-        }
-
-        .donate-btn {
-            background-color: var(--blood-red);
-            color: var(--white);
-            border: none;
-            padding: 10px 25px;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .donate-btn:hover {
-            background-color: var(--blood-dark-red);
-            transform: translateY(-2px);
-        }
-
-        /* Hero Section */
-        .hero-section {
-            background: linear-gradient(135deg, rgba(229, 57, 53, 0.9), rgba(183, 28, 28, 0.8)), url('https://picsum.photos/seed/blooddonationhero/1920/600.jpg') center/cover no-repeat;
-            color: var(--white);
-            padding: 100px 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="rgba(255,255,255,0.05)" d="M50,0 C77.6,0 100,22.4 100,50 C100,77.6 77.6,100 50,100 C22.4,100 0,77.6 0,50 C0,22.4 22.4,0 50,0 Z M50,10 C27.9,10 10,27.9 10,50 C10,72.1 27.9,90 50,90 C72.1,90 90,72.1 90,50 C90,27.9 72.1,10 50,10 Z M50,20 C65.5,20 78,32.5 78,48 C78,63.5 65.5,76 50,76 C34.5,76 22,63.5 22,48 C22,32.5 34.5,20 50,20 Z M50,30 C39,30 30,39 30,50 C30,61 39,70 50,70 C61,70 70,61 70,50 C70,39 61,30 50,30 Z M50,40 C54.4,40 58,43.6 58,48 C58,52.4 54.4,56 50,56 C45.6,56 42,52.4 42,48 C42,43.6 45.6,40 50,40 Z"/></svg>') repeat;
-            opacity: 0.3;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .hero-title {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .hero-subtitle {
-            font-size: 1.3rem;
-            max-width: 800px;
-            margin: 0 auto 40px;
-            opacity: 0.95;
-        }
-
-        /* Content Sections */
-        .content-section {
-            padding: 80px 0;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--blood-red);
-            margin-bottom: 30px;
-            text-align: center;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: "";
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background-color: var(--blood-red);
-        }
-
-        .section-content {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 30px;
-        }
-
-        /* Vision & Mission Cards */
-        .vision-mission-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-
-        .vision-mission-card {
-            background-color: var(--white);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .vision-mission-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, var(--blood-red), var(--blood-dark-red));
-        }
-
-        .vision-mission-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-        }
-
-        .card-icon {
-            width: 70px;
-            height: 70px;
-            background-color: var(--blood-light-red);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 25px;
-            color: var(--blood-red);
-            font-size: 2rem;
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--blood-red);
-            margin-bottom: 20px;
-        }
-
-        /* Mission Points */
-        .mission-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .mission-list li {
-            padding: 15px 0;
-            border-bottom: 1px solid var(--medium-gray);
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .mission-list li:last-child {
-            border-bottom: none;
-        }
-
-        .mission-list i {
-            color: var(--blood-red);
-            margin-right: 15px;
-            margin-top: 3px;
-            font-size: 1.2rem;
-        }
-
-        /* Why LifeFlow Section */
-        .why-lifeflow-section {
-            background-color: var(--white);
-            padding: 80px 0;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-
-        .feature-card {
-            text-align: center;
-            padding: 30px;
-            border-radius: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover {
-            background-color: var(--blood-light-red);
-            transform: translateY(-5px);
-        }
-
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background-color: var(--blood-red);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            color: var(--white);
-            font-size: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card:hover .feature-icon {
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(229, 57, 53, 0.3);
-        }
-
-        .feature-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--blood-red);
-            margin-bottom: 15px;
-        }
-
-        .feature-description {
-            color: var(--dark-gray);
-            font-size: 0.95rem;
-        }
-
-        /* Call to Action Section */
-        .cta-section {
-            background: linear-gradient(135deg, var(--blood-red), var(--blood-dark-red));
-            color: var(--white);
-            padding: 80px 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="rgba(255,255,255,0.05)" d="M50,0 C77.6,0 100,22.4 100,50 C100,77.6 77.6,100 50,100 C22.4,100 0,77.6 0,50 C0,22.4 22.4,0 50,0 Z M50,10 C27.9,10 10,27.9 10,50 C10,72.1 27.9,90 50,90 C72.1,90 90,72.1 90,50 C90,27.9 72.1,10 50,10 Z M50,20 C65.5,20 78,32.5 78,48 C78,63.5 65.5,76 50,76 C34.5,76 22,63.5 22,48 C22,32.5 34.5,20 50,20 Z M50,30 C39,30 30,39 30,50 C30,61 39,70 50,70 C61,70 70,61 70,50 C70,39 61,30 50,30 Z M50,40 C54.4,40 58,43.6 58,48 C58,52.4 54.4,56 50,56 C45.6,56 42,52.4 42,48 C42,43.6 45.6,40 50,40 Z"/></svg>') repeat;
-            opacity: 0.2;
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .cta-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .cta-text {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 40px;
-            opacity: 0.95;
-        }
-
-        .cta-btn {
-            background-color: var(--white);
-            color: var(--blood-red);
-            border: none;
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .cta-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Our Story Section */
-        .story-section {
-            background-color: var(--white);
-            padding: 80px 0;
-        }
-
-        .story-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
-            margin-top: 50px;
-        }
-
-        .story-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-        }
-
-        .story-image {
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-
-        .story-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .story-image:hover img {
-            transform: scale(1.05);
-        }
-
-        /* Footer */
-        .footer {
-            background-color: var(--blood-dark-red);
-            color: var(--white);
-            padding: 50px 0 20px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .footer-column h3 {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .footer-column h3::after {
-            content: "";
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--white);
-        }
-
-        .footer-links {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-links li {
-            margin-bottom: 10px;
-        }
-
-        .footer-links a {
-            color: var(--white);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--blood-light-red);
-            transform: translateX(5px);
-        }
-
-        .social-icons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .social-icon:hover {
-            background-color: var(--white);
-            color: var(--blood-red);
-            transform: translateY(-3px);
-        }
-
-        .copyright {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            font-size: 0.9rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero-title {
-                font-size: 2rem;
-            }
-
-            .section-title {
-                font-size: 2rem;
-            }
-
-            .cta-title {
-                font-size: 2rem;
-            }
-
-            .story-content {
-                grid-template-columns: 1fr;
-            }
-
-            .content-section {
-                padding: 60px 0;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About LifeFlow | Blood Donation Management</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+{% block extra_css %}
+<style>
+:root{
+    --red:#E63946;
+    --dark:#2D3436;
+    --muted:#636E72;
+}
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Plus Jakarta Sans',sans-serif;
+}
+
+/* PAGE BACKGROUND */
+body{
+    background:url("{% static 'assets/img/image.png' %}") center/cover no-repeat;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:40px 20px;
+}
+
+/* MAIN CONTAINER */
+.container{
+    width:100%;
+    max-width:1200px;
+    background:#ffffff;
+    border-radius:28px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.15);
+    overflow:hidden;
+}
+
+/* HEADER */
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:32px 60px;
+}
+
+.logo{
+    font-size:26px;
+    font-weight:800;
+    color:var(--red);
+}
+
+nav{
+    display:flex;
+    gap:35px;
+}
+
+nav a{
+    text-decoration:none;
+    color:var(--dark);
+    font-weight:600;
+}
+
+nav a.active {
+    color: var(--red);
+}
+
+.btn-try{
+    background:var(--red);
+    color:white;
+    padding:12px 28px;
+    border:none;
+    border-radius:50px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* HERO */
+.hero{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:40px 60px 20px;
+    gap:40px;
+}
+
+.hero-text{
+    max-width:520px;
+}
+
+.hero-text h1{
+    font-size:46px;
+    font-weight:800;
+    color:var(--dark);
+    line-height:1.2;
+    margin-bottom:20px;
+}
+
+.hero-text p{
+    font-size:18px;
+    color:var(--muted);
+    line-height:1.6;
+    margin-bottom:30px;
+}
+
+.btn-hero{
+    background:var(--red);
+    color:white;
+    padding:16px 38px;
+    border:none;
+    border-radius:50px;
+    font-size:17px;
+    font-weight:700;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-block;
+}
+
+.hero-image img{
+    width:460px;
+    max-width:100%;
+}
+
+/* ABOUT SECTIONS */
+.about-section {
+    padding: 40px 60px;
+}
+
+.about-section h2 {
+    font-size:32px;
+    font-weight:800;
+    color:var(--dark);
+    margin-bottom:20px;
+    position:relative;
+    padding-bottom:15px;
+}
+
+.about-section h2:after {
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:60px;
+    height:4px;
+    background:var(--red);
+    border-radius:2px;
+}
+
+.about-section p {
+    font-size:18px;
+    color:var(--muted);
+    line-height:1.7;
+    margin-bottom:25px;
+}
+
+/* MISSION VISION */
+.mission-vision {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    padding: 0 60px 40px;
+}
+
+.mission-vision-card {
+    background:#fafafa;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.06);
+}
+
+.mission-vision-card h3 {
+    font-size:24px;
+    font-weight:800;
+    color:var(--red);
+    margin-bottom:15px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.mission-vision-card p {
+    font-size:16px;
+    color:var(--muted);
+    line-height:1.6;
+}
+
+/* TEAM */
+.team {
+    padding: 0 60px 40px;
+}
+
+.team h2 {
+    font-size:32px;
+    font-weight:800;
+    color:var(--dark);
+    margin-bottom:30px;
+    position:relative;
+    padding-bottom:15px;
+}
+
+.team h2:after {
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:60px;
+    height:4px;
+    background:var(--red);
+    border-radius:2px;
+}
+
+.team-members {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:25px;
+}
+
+.team-member {
+    text-align:center;
+    background:#fafafa;
+    border-radius:20px;
+    padding:25px 15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.06);
+    transition:transform 0.3s ease;
+}
+
+.team-member:hover {
+    transform:translateY(-5px);
+}
+
+.team-member img {
+    width:100px;
+    height:100px;
+    border-radius:50%;
+    object-fit:cover;
+    margin-bottom:15px;
+    border:4px solid var(--red);
+}
+
+.team-member h4 {
+    font-size:18px;
+    font-weight:700;
+    color:var(--dark);
+    margin-bottom:5px;
+}
+
+.team-member p {
+    font-size:14px;
+    color:var(--muted);
+    margin-bottom:0;
+}
+
+/* VALUES */
+.values {
+    padding: 0 60px 40px;
+}
+
+.values h2 {
+    font-size:32px;
+    font-weight:800;
+    color:var(--dark);
+    margin-bottom:30px;
+    position:relative;
+    padding-bottom:15px;
+}
+
+.values h2:after {
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:60px;
+    height:4px;
+    background:var(--red);
+    border-radius:2px;
+}
+
+.value-cards {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:25px;
+}
+
+.value-card {
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:15px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.08);
+}
+
+.value-icon {
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#FFEDEE;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    color:var(--red);
+}
+
+.value-card h4 {
+    font-size:18px;
+    font-weight:700;
+    color:var(--dark);
+}
+
+.value-card p {
+    font-size:15px;
+    color:var(--muted);
+    line-height:1.5;
+}
+
+/* FOOTER NOTE */
+.footer-note{
+    text-align:center;
+    padding:30px 60px;
+    font-weight:600;
+    color:var(--muted);
+    background:#fafafa;
+}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+    .hero{
+        flex-direction:column;
+        text-align:center;
+    }
+    .mission-vision, .team-members, .value-cards {
+        grid-template-columns:1fr 1fr;
+    }
+    nav{display:none;}
+}
+
+@media(max-width:768px){
+    .mission-vision, .team-members, .value-cards {
+        grid-template-columns:1fr;
+    }
+    .hero-text h1{font-size:34px;}
+    .about-section, .mission-vision, .team, .values {
+        padding: 30px;
+    }
+}
+</style>
+{% endblock %}
 </head>
+
 <body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <div class="container">
-                <a class="navbar-brand" href="index.html">
-                    <i class="fas fa-tint"></i>
-                    LifeFlow
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav mx-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="index.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link active" href="about.html">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="donate.html">Donate</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="request.html">Request</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contact.html">Contact</a>
-                        </li>
-                    </ul>
-                    <button class="donate-btn">Donate Blood</button>
-                </div>
-            </div>
-        </nav>
-    </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-content">
-            <h1 class="hero-title">About LifeFlow</h1>
-            <p class="hero-subtitle">Giving Life Through Blood Donation</p>
+<!-- MAIN HERO CONTAINER -->
+<div class="container">
+
+<header>
+    <div class="logo"> LifeFlow</div>
+    <nav>
+        <a href="{% url 'landing' %}">Home</a>
+        <a href="{% url 'about' %}" >About Us</a>
+        <a href="{% url 'gallery' %}">Gallery</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <button class="btn-try"><a href="{% url 'welcome' %}" class="btn-hero">Get Started</a></button>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-text">
+        <h1>About LifeFlow</h1>
+        <p>
+            We're on a mission to revolutionize blood donation management and save lives through innovative technology and community engagement.
+        </p>
+        <a href="{% url 'welcome' %}" class="btn-hero">Join Our Mission</a>
+    </div>
+
+    <div class="hero-image">
+        <img src="{% static 'assets/img/img3.png' %}" alt="Blood Donation Illustration">
+    </div>
+</section>
+
+<section class="about-section">
+    <h2>Our Story</h2>
+    <p>
+        LifeFlow began in 2018 when our founders witnessed firsthand the critical blood shortages at local hospitals during emergencies. What started as a small initiative to connect willing donors with patients in need has grown into a comprehensive platform that serves over 850,000 donors and 12,000+ healthcare facilities worldwide.
+    </p>
+    <p>
+        We believe that technology can bridge the gap between those who need blood and those who can donate. Our platform streamlines the entire process, from donor registration to emergency blood requests, ensuring that the right blood type reaches the right patient at the right time.
+    </p>
+</section>
+
+<div class="mission-vision">
+    <div class="mission-vision-card">
+        <h3>🎯 Our Mission</h3>
+        <p>
+            To create a seamless connection between blood donors and healthcare facilities, ensuring no life is lost due to blood shortages. We're committed to making blood donation accessible, efficient, and safe for everyone involved.
+        </p>
+    </div>
+
+    <div class="mission-vision-card">
+        <h3>🌟 Our Vision</h3>
+        <p>
+            A world where blood shortages are eliminated, and every patient receives the blood they need when they need it. We envision a global network of donors and healthcare facilities working together to save lives.
+        </p>
+    </div>
+</div>
+
+<section class="values">
+    <h2>Our Values</h2>
+    <div class="value-cards">
+        <div class="value-card">
+            <div class="value-icon">❤️</div>
+            <h4>Compassion</h4>
+            <p>We approach our work with empathy and understanding, recognizing the human impact of every blood donation.</p>
         </div>
-    </section>
 
-    <!-- Introduction Section -->
-    <section class="content-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <p class="section-content text-center">
-                        LifeFlow is a community-driven platform dedicated to connecting willing blood donors with patients in need. Our mission is to save lives by making blood donation simple, safe, and accessible for everyone.
-                    </p>
-                </div>
-            </div>
+        <div class="value-card">
+            <div class="value-icon">🔬</div>
+            <h4>Innovation</h4>
+            <p>We continuously improve our platform with cutting-edge technology to make blood donation more efficient.</p>
         </div>
-    </section>
 
-    <!-- Vision & Mission Section -->
-    <section class="content-section">
-        <div class="container">
-            <h2 class="section-title">Our Vision & Mission</h2>
-            <div class="vision-mission-container">
-                <!-- Vision Card -->
-                <div class="vision-mission-card">
-                    <div class="card-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h3 class="card-title">Our Vision</h3>
-                    <p>
-                        To create a world where no patient suffers due to the shortage of blood, and every donor feels empowered to contribute to the community.
-                    </p>
-                </div>
-
-                <!-- Mission Card -->
-                <div class="vision-mission-card">
-                    <div class="card-icon">
-                        <i class="fas fa-bullseye"></i>
-                    </div>
-                    <h3 class="card-title">Our Mission</h3>
-                    <ul class="mission-list">
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <span>Facilitate timely communication between donors and blood banks.</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <span>Educate communities about the importance of regular blood donation.</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <span>Ensure donor safety and eligibility through easy-to-use readiness tools.</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle"></i>
-                            <span>Maintain a reliable network of donors ready to respond during emergencies.</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <div class="value-card">
+            <div class="value-icon">🤝</div>
+            <h4>Collaboration</h4>
+            <p>We foster partnerships between donors, hospitals, and blood banks to create a unified life-saving network.</p>
         </div>
-    </section>
 
-    <!-- Why LifeFlow Section -->
-    <section class="why-lifeflow-section">
-        <div class="container">
-            <h2 class="section-title">Why LifeFlow</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-user-check"></i>
-                    </div>
-                    <h3 class="feature-title">User-Friendly</h3>
-                    <p class="feature-description">
-                        Our step-by-step donor readiness form ensures eligibility and safety.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="feature-title">Community-Focused</h3>
-                    <p class="feature-description">
-                        We connect donors directly with those in need.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-ambulance"></i>
-                    </div>
-                    <h3 class="feature-title">Emergency Response</h3>
-                    <p class="feature-description">
-                        Donors can indicate their readiness to donate during critical situations.
-                    </p>
-                </div>
-
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3 class="feature-title">Secure & Trusted</h3>
-                    <p class="feature-description">
-                        Donor information is stored safely, and your privacy is respected.
-                    </p>
-                </div>
-            </div>
+        <div class="value-card">
+            <div class="value-icon">🛡️</div>
+            <h4>Safety</h4>
+            <p>We prioritize the health and safety of both donors and recipients through rigorous screening and secure processes.</p>
         </div>
-    </section>
 
-    <!-- Call to Action Section -->
-    <section class="cta-section">
-        <div class="cta-content">
-            <h2 class="cta-title">Join LifeFlow Today</h2>
-            <p class="cta-text">
-                Become a hero for someone in need. Every drop counts, and your blood donation can save up to three lives.
-            </p>
-            <button class="cta-btn">Get Started Now</button>
+        <div class="value-card">
+            <div class="value-icon">🌍</div>
+            <h4>Accessibility</h4>
+            <p>We're committed to making blood donation accessible to all, regardless of location or background.</p>
         </div>
-    </section>
 
-    <!-- Our Story Section -->
-    <section class="story-section">
-        <div class="container">
-            <h2 class="section-title">Our Story</h2>
-            <div class="story-content">
-                <div class="story-text">
-                    <p>
-                        LifeFlow started with a simple idea: making blood donation more organized, transparent, and accessible. Seeing the challenges patients and donors face in emergencies inspired us to build a platform where everyone can contribute safely and effectively.
-                    </p>
-                    <p>
-                        What began as a small initiative has grown into a comprehensive blood donation management system, connecting thousands of donors with patients across the region. Our journey has been fueled by the belief that every individual has the power to save lives, and technology can bridge the gap between those willing to help and those in desperate need.
-                    </p>
-                    <p>
-                        Today, LifeFlow stands as a testament to the power of community and compassion. We continue to innovate and improve our platform, always keeping the donor and recipient at the heart of everything we do.
-                    </p>
-                </div>
-                <div class="story-image">
-                    <img src="https://picsum.photos/seed/blooddonationteam/600/400.jpg" alt="LifeFlow Team">
-                </div>
-            </div>
+        <div class="value-card">
+            <div class="value-icon">📈</div>
+            <h4>Impact</h4>
+            <p>We measure our success by the lives we save and the communities we strengthen through our work.</p>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <h3>About LifeFlow</h3>
-                    <p>
-                        LifeFlow is a community-driven platform dedicated to connecting blood donors with patients in need, saving lives through the power of donation.
-                    </p>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul class="footer-links">
-                        <li><a href="index.html">Home</a></li>
-                        <li><a href="about.html">About Us</a></li>
-                        <li><a href="donate.html">Donate Blood</a></li>
-                        <li><a href="request.html">Request Blood</a></li>
-                        <li><a href="contact.html">Contact</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h3>Get Involved</h3>
-                    <ul class="footer-links">
-                        <li><a href="#">Become a Donor</a></li>
-                        <li><a href="#">Organize Blood Drive</a></li>
-                        <li><a href="#">Volunteer</a></li>
-                        <li><a href="#">Partner with Us</a></li>
-                        <li><a href="#">Donate Resources</a></li>
-                    </ul>
-                </div>
-
-                <div class="footer-column">
-                    <h3>Contact Info</h3>
-                    <ul class="footer-links">
-                        <li><i class="fas fa-map-marker-alt"></i> 123 Medical Center Drive</li>
-                        <li><i class="fas fa-phone"></i> +1 234 567 8900</li>
-                        <li><i class="fas fa-envelope"></i> info@lifeflow.org</li>
-                        <li><i class="fas fa-clock"></i> 24/7 Emergency Support</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="copyright">
-                <p>&copy; 2023 LifeFlow Blood Donation Platform. All rights reserved.</p>
-            </div>
+<section class="team">
+    <h2>Our Leadership Team</h2>
+    <div class="team-members">
+        <div class="team-member">
+            <img src="{% static 'assets/img/team1.jpg' %}" alt="Team Member">
+            <h4>Dr. Sarah Johnson</h4>
+            <p>CEO & Co-Founder</p>
         </div>
-    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Smooth scrolling for anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
-                    }
-                });
-            });
+        <div class="team-member">
+            <img src="{% static 'assets/img/team2.jpg' %}" alt="Team Member">
+            <h4>Michael Chen</h4>
+            <p>CTO & Co-Founder</p>
+        </div>
 
-            // CTA button click event
-            document.querySelector('.cta-btn').addEventListener('click', function() {
-                // Redirect to registration page
-                window.location.href = 'register.html';
-            });
+        <div class="team-member">
+            <img src="{% static 'assets/img/team3.jpg' %}" alt="Team Member">
+            <h4>Emily Rodriguez</h4>
+            <p>Director of Operations</p>
+        </div>
 
-            // Donate button click event
-            document.querySelector('.donate-btn').addEventListener('click', function() {
-                // Redirect to donation page
-                window.location.href = 'donate.html';
-            });
+        <div class="team-member">
+            <img src="{% static 'assets/img/team4.jpg' %}" alt="Team Member">
+            <h4>Dr. James Williams</h4>
+            <p>Medical Director</p>
+        </div>
+    </div>
+</section>
 
-            // Add scroll animations
-            const observerOptions = {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            };
+<div class="footer-note">
+    Join us in our mission to save lives through blood donation ❤️
+</div>
 
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            }, observerOptions);
+</div>
 
-            // Observe elements for animation
-            document.querySelectorAll('.vision-mission-card, .feature-card').forEach(el => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateY(20px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-        });
-    </script>
 </body>
 </html>

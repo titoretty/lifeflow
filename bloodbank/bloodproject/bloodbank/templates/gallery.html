@@ -1,0 +1,922 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery | LifeFlow - Blood Donation Management</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% block extra_css %}
+<style>
+:root{
+    --red:#E63946;
+    --dark:#2D3436;
+    --muted:#636E72;
+    --light-bg:#f8f9fa;
+}
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Plus Jakarta Sans',sans-serif;
+}
+
+/* PAGE BACKGROUND */
+body{
+    background:url("{% static 'assets/img/image.png' %}") center/cover no-repeat;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:40px 20px;
+}
+
+/* MAIN CONTAINER */
+.container{
+    width:100%;
+    max-width:1200px;
+    background:#ffffff;
+    border-radius:28px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.15);
+    overflow:hidden;
+}
+
+/* HEADER */
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:32px 60px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.logo{
+    font-size:26px;
+    font-weight:800;
+    color:var(--red);
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+nav{
+    display:flex;
+    gap:35px;
+}
+
+nav a{
+    text-decoration:none;
+    color:var(--dark);
+    font-weight:600;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--red);
+}
+
+nav a.active {
+    color: var(--red);
+}
+
+nav a.active::after {
+    content:"";
+    position:absolute;
+    bottom:-6px;
+    left:0;
+    width:100%;
+    height:3px;
+    background:var(--red);
+    border-radius:4px;
+}
+
+.btn-try{
+    background:var(--red);
+    color:white;
+    padding:12px 28px;
+    border:none;
+    border-radius:50px;
+    font-weight:700;
+    cursor:pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-try:hover {
+    background: #d62828;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.3);
+}
+
+/* HERO */
+.hero {
+    padding: 60px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(230, 57, 70, 0.05) 0%, rgba(45, 52, 54, 0.05) 100%);
+}
+
+.hero-text h1 {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 16px;
+    animation: fadeInDown 1s ease;
+}
+
+.hero-text p {
+    font-size: 20px;
+    color: var(--muted);
+    max-width: 700px;
+    margin: 0 auto 40px;
+    animation: fadeInUp 1s ease 0.2s both;
+}
+
+/* FILTER SECTION */
+.filter-section {
+    padding: 20px 60px;
+    background: var(--light-bg);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.filter-btn.active {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+}
+
+/* GALLERY SECTION */
+.gallery-section {
+    padding: 40px 60px;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.gallery-item {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 250px;
+    animation: fadeInUp 0.6s ease forwards;
+    opacity: 0;
+}
+
+.gallery-item:nth-child(1) { animation-delay: 0.1s; }
+.gallery-item:nth-child(2) { animation-delay: 0.2s; }
+.gallery-item:nth-child(3) { animation-delay: 0.3s; }
+.gallery-item:nth-child(4) { animation-delay: 0.4s; }
+.gallery-item:nth-child(5) { animation-delay: 0.5s; }
+.gallery-item:nth-child(6) { animation-delay: 0.6s; }
+.gallery-item:nth-child(7) { animation-delay: 0.7s; }
+.gallery-item:nth-child(8) { animation-delay: 0.8s; }
+.gallery-item:nth-child(9) { animation-delay: 0.9s; }
+
+.gallery-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}
+
+.gallery-category {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.gallery-title {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.gallery-date {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 13px;
+    margin-top: 5px;
+}
+
+/* LIGHTBOX */
+.lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.lightbox.active {
+    display: flex;
+    animation: fadeIn 0.3s ease;
+}
+
+.lightbox-content {
+    position: relative;
+    max-width: 900px;
+    max-height: 90vh;
+    animation: zoomIn 0.3s ease;
+}
+
+.lightbox-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.lightbox-close {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.lightbox-close:hover {
+    transform: rotate(90deg);
+}
+
+.lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.lightbox-nav:hover {
+    color: var(--red);
+}
+
+.lightbox-prev {
+    left: -40px;
+}
+
+.lightbox-next {
+    right: -40px;
+}
+
+.lightbox-info {
+    position: absolute;
+    bottom: -40px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+}
+
+.lightbox-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.lightbox-caption {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* LOAD MORE BUTTON */
+.load-more {
+    text-align: center;
+    padding: 40px 60px;
+}
+
+.load-more-btn {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.load-more-btn:hover {
+    background: #d62828;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(230, 57, 70, 0.3);
+}
+
+/* STATS SECTION */
+.stats-section {
+    padding: 60px;
+    background: var(--light-bg);
+}
+
+.stats-section h2 {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--dark);
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.stats-section h2::after {
+    content: "";
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: var(--red);
+    border-radius: 2px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.stat-box {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+.stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(230, 57, 70, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+
+.stat-icon i {
+    font-size: 30px;
+    color: var(--red);
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--red);
+    margin-bottom: 10px;
+}
+
+.stat-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+/* FOOTER */
+.footer {
+    background-color: var(--dark);
+    color: white;
+    padding: 30px 60px;
+    text-align: center;
+}
+
+.footer p {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    nav{display:none;}
+}
+
+@media(max-width:768px){
+    .hero, .filter-section, .gallery-section, .stats-section {
+        padding: 40px 20px;
+    }
+    
+    .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    
+    .hero-text h1 {
+        font-size: 34px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .lightbox-nav {
+        font-size: 24px;
+    }
+    
+    .lightbox-prev {
+        left: -30px;
+    }
+    
+    .lightbox-next {
+        right: -30px;
+    }
+}
+</style>
+{% endblock %}
+</head>
+
+<body>
+
+<!-- MAIN CONTAINER -->
+<div class="container">
+
+<header>
+    <div class="logo"> LifeFlow</div>
+    <nav>
+        <a href="{% url 'landing' %}">Home</a>
+        <a href="{% url 'about' %}">About Us</a>
+        <a href="{% url 'gallery' %}" >Gallery</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <button class="btn-try"><a href="{% url 'welcome' %}" class="btn-hero">Get Started</a></button>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-text">
+        <h1>LifeFlow Gallery</h1>
+        <p>Explore our blood donation camps, events, and the impact we're making together in communities across the country.</p>
+    </div>
+</section>
+
+<section class="filter-section">
+    <button class="filter-btn active" data-filter="all">All Photos</button>
+    <button class="filter-btn" data-filter="blood-camps">Blood Camps</button>
+    <button class="filter-btn" data-filter="donation-process">Donation Process</button>
+    <button class="filter-btn" data-filter="team">Our Team</button>
+   
+</section>
+
+<section class="gallery-section">
+    <div class="gallery-grid">
+        <!-- Blood Camps -->
+        <div class="gallery-item" data-category="blood-camps">
+          <img src="{% static 'assets/img/camp1.jpeg' %}" alt="Blood Donation Awareness Campaign">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Blood Camps</span>
+                <h3 class="gallery-title">Community Blood Drive</h3>
+                <p class="gallery-date">March 15, 2024</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="blood-camps">
+           <img src="{% static 'assets/img/camp2.jpeg' %}" alt="Blood Donation Awareness Campaign">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Blood Camps</span>
+                <h3 class="gallery-title">Mobile Blood Collection Unit</h3>
+                <p class="gallery-date">March 10, 2024</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="blood-camps">
+            <img src="{% static 'assets/img/camp3.jpeg' %}" alt="Blood Donation Awareness Campaign">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Blood Camps</span>
+                <h3 class="gallery-title">Corporate Blood Drive</h3>
+                <p class="gallery-date">February 28, 2024</p>
+            </div>
+        </div>
+        
+        <!-- Donation Process -->
+        <div class="gallery-item" data-category="donation-process">
+            <img src="{% static 'assets/img/donate1.jpeg' %}" alt="Blood Donation Awareness Campaign">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Donation Process</span>
+                <h3 class="gallery-title">Registration & Screening</h3>
+                <p class="gallery-date">March 20, 2024</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="donation-process">
+           <img src="{% static 'assets/img/donate2.jpeg' %}" alt="Blood Donation Awareness Campaign">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Donation Process</span>
+                <h3 class="gallery-title">Blood Collection</h3>
+                <p class="gallery-date">March 18, 2024</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="donation-process">
+           <img src="{% static 'assets/img/donate3.jpeg' %}" alt="Blood Donation Awareness Campaign">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Donation Process</span>
+                <h3 class="gallery-title">Post-Donation Care</h3>
+                <p class="gallery-date">March 16, 2024</p>
+            </div>
+        </div>
+        
+        <!-- Our Team -->
+        <div class="gallery-item" data-category="team">
+            <img src="{% static 'assets/img/camp4.jpeg' %}" alt="Blood Donation Awareness Campaign">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Our Team</span>
+                <h3 class="gallery-title">LifeFlow Medical Team</h3>
+                <p class="gallery-date">March 5, 2024</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="team">
+            <img src="{% static 'assets/img/camp5.jpeg' %}" alt="Blood Donation Awareness Campaign">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Our Team</span>
+                <h3 class="gallery-title">Volunteer Training Session</h3>
+                <p class="gallery-date">February 25, 2024</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" data-category="team">
+            <img src="{% static 'assets/img/camp6.jpeg' %}" alt="Blood Donation Awareness Campaign">
+            <div class="gallery-overlay">
+                <span class="gallery-category">Our Team</span>
+                <h3 class="gallery-title">Team Celebration</h3>
+                <p class="gallery-date">February 14, 2024</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="load-more">
+    <button class="load-more-btn">Load More Images</button>
+</div>
+
+<section class="stats-section">
+    <h2>Our Impact in Pictures</h2>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-camera"></i>
+            </div>
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Events Captured</div>
+        </div>
+        
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-number">10,000+</div>
+            <div class="stat-label">Donors Featured</div>
+        </div>
+        
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="stat-number">150+</div>
+            <div class="stat-label">Locations Covered</div>
+        </div>
+        
+        <div class="stat-box">
+            <div class="stat-icon">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="stat-number">50,000+</div>
+            <div class="stat-label">Lives Impacted</div>
+        </div>
+    </div>
+</section>
+
+<div class="footer">
+    <p>© 2024 LifeFlow. Saving lives through technology and compassion ❤️</p>
+</div>
+
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+    <div class="lightbox-content">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <span class="lightbox-nav lightbox-prev" id="lightbox-prev">&lsaquo;</span>
+        <span class="lightbox-nav lightbox-next" id="lightbox-next">&rsaquo;</span>
+        <img src="" alt="" id="lightbox-img">
+        <div class="lightbox-info">
+            <h3 class="lightbox-title" id="lightbox-title"></h3>
+            <p class="lightbox-caption" id="lightbox-caption"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gallery filtering
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Update active button
+            filterBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            // Filter gallery items
+            const filter = btn.getAttribute('data-filter');
+            
+            galleryItems.forEach(item => {
+                if (filter === 'all' || item.getAttribute('data-category') === filter) {
+                    item.style.display = 'block';
+                    // Re-trigger animation
+                    item.style.animation = 'none';
+                    setTimeout(() => {
+                        item.style.animation = '';
+                    }, 10);
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+    
+    // Lightbox functionality
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
+    
+    let currentImageIndex = 0;
+    let visibleGalleryItems = [];
+    
+    // Update visible gallery items based on current filter
+    function updateVisibleGalleryItems() {
+        const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+        visibleGalleryItems = Array.from(galleryItems).filter(item => {
+            return activeFilter === 'all' || item.getAttribute('data-category') === activeFilter;
+        });
+    }
+    
+    // Open lightbox
+    galleryItems.forEach((item, index) => {
+        item.addEventListener('click', () => {
+            updateVisibleGalleryItems();
+            currentImageIndex = visibleGalleryItems.indexOf(item);
+            
+            const img = item.querySelector('img');
+            const title = item.querySelector('.gallery-title').textContent;
+            const caption = item.querySelector('.gallery-date').textContent;
+            
+            lightboxImg.src = img.src;
+            lightboxTitle.textContent = title;
+            lightboxCaption.textContent = caption;
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+    
+    // Close lightbox
+    function closeLightbox() {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    lightboxClose.addEventListener('click', closeLightbox);
+    
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) {
+            closeLightbox();
+        }
+    });
+    
+    // Navigate images
+    function showImage(index) {
+        if (index < 0) index = visibleGalleryItems.length - 1;
+        if (index >= visibleGalleryItems.length) index = 0;
+        
+        currentImageIndex = index;
+        const item = visibleGalleryItems[currentImageIndex];
+        
+        const img = item.querySelector('img');
+        const title = item.querySelector('.gallery-title').textContent;
+        const caption = item.querySelector('.gallery-date').textContent;
+        
+        lightboxImg.style.opacity = '0';
+        
+        setTimeout(() => {
+            lightboxImg.src = img.src;
+            lightboxTitle.textContent = title;
+            lightboxCaption.textContent = caption;
+            lightboxImg.style.opacity = '1';
+        }, 200);
+    }
+    
+    lightboxPrev.addEventListener('click', () => {
+        showImage(currentImageIndex - 1);
+    });
+    
+    lightboxNext.addEventListener('click', () => {
+        showImage(currentImageIndex + 1);
+    });
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('active')) return;
+        
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') showImage(currentImageIndex - 1);
+        if (e.key === 'ArrowRight') showImage(currentImageIndex + 1);
+    });
+    
+    // Load more functionality
+    const loadMoreBtn = document.querySelector('.load-more-btn');
+    let itemsLoaded = 15;
+    
+    loadMoreBtn.addEventListener('click', () => {
+        // Simulate loading more images
+        const galleryGrid = document.querySelector('.gallery-grid');
+        
+        for (let i = 0; i < 6; i++) {
+            const categories = ['blood-camps', 'donation-process', 'team', 'events', 'recipients'];
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            
+            const newItem = document.createElement('div');
+            newItem.className = 'gallery-item';
+            newItem.setAttribute('data-category', randomCategory);
+            
+            const randomSeed = 'extra' + (itemsLoaded + i);
+            const date = new Date(2024, Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1);
+            const formattedDate = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            newItem.innerHTML = `
+                <img src="https://picsum.photos/seed/${randomSeed}/600/400.jpg" alt="Blood Donation Image">
+                <div class="gallery-overlay">
+                    <span class="gallery-category">${randomCategory.replace('-', ' ')}</span>
+                    <h3 class="gallery-title">LifeFlow Activity ${itemsLoaded + i + 1}</h3>
+                    <p class="gallery-date">${formattedDate}</p>
+                </div>
+            `;
+            
+            // Initially hide if not matching current filter
+            const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+            if (activeFilter !== 'all' && randomCategory !== activeFilter) {
+                newItem.style.display = 'none';
+            }
+            
+            galleryGrid.appendChild(newItem);
+            
+            // Add click event to new item
+            newItem.addEventListener('click', () => {
+                updateVisibleGalleryItems();
+                currentImageIndex = visibleGalleryItems.indexOf(newItem);
+                
+                const img = newItem.querySelector('img');
+                const title = newItem.querySelector('.gallery-title').textContent;
+                const caption = newItem.querySelector('.gallery-date').textContent;
+                
+                lightboxImg.src = img.src;
+                lightboxTitle.textContent = title;
+                lightboxCaption.textContent = caption;
+                
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+        }
+        
+        itemsLoaded += 6;
+        
+        // Hide button after loading a certain number of items
+        if (itemsLoaded >= 27) {
+            loadMoreBtn.textContent = 'All Images Loaded';
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.style.opacity = '0.6';
+            loadMoreBtn.style.cursor = 'not-allowed';
+        }
+    });
+});
+</script>
+
+</body>
+</html>

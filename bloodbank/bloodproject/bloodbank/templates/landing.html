@@ -1,0 +1,372 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LifeFlow | Blood Donation Management</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+{% block extra_css %}
+<style>
+:root{
+    --red:#E63946;
+    --dark:#2D3436;
+    --muted:#636E72;
+}
+
+/* RESET */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Plus Jakarta Sans',sans-serif;
+}
+
+/* PAGE BACKGROUND */
+body{
+    background:url("{% static 'assets/img/image.png' %}") center/cover no-repeat;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:40px 20px;
+}
+
+/* MAIN CONTAINER */
+.container{
+    width:100%;
+    max-width:1200px;
+    background:#ffffff;
+    border-radius:28px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.15);
+    overflow:hidden;
+}
+
+/* HEADER */
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:32px 60px;
+}
+
+.logo{
+    font-size:26px;
+    font-weight:800;
+    color:var(--red);
+}
+
+nav{
+    display:flex;
+    gap:35px;
+}
+
+nav a{
+    text-decoration:none;
+    color:var(--dark);
+    font-weight:600;
+}
+
+.btn-try{
+    background:var(--red);
+    color:white;
+    padding:12px 28px;
+    border:none;
+    border-radius:50px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+/* HERO */
+.hero{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:40px 60px 20px;
+    gap:40px;
+}
+
+.hero-text{
+    max-width:520px;
+}
+
+.hero-text h1{
+    font-size:46px;
+    font-weight:800;
+    color:var(--dark);
+    line-height:1.2;
+    margin-bottom:20px;
+}
+
+.hero-text p{
+    font-size:18px;
+    color:var(--muted);
+    line-height:1.6;
+    margin-bottom:30px;
+}
+
+.btn-hero{
+    background:var(--red);
+    color:white;
+    padding:16px 38px;
+    border:none;
+    border-radius:50px;
+    font-size:17px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.hero-image img{
+    width:460px;
+    max-width:100%;
+}
+
+/* FEATURES */
+.features{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:22px;
+    padding:35px 60px 45px;
+}
+
+.feature-card{
+    background:white;
+    border-radius:18px;
+    padding:22px;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.08);
+}
+
+.feature-icon{
+    width:44px;
+    height:44px;
+    border-radius:12px;
+    background:#FFEDEE;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    color:var(--red);
+}
+
+.feature-text{
+    font-size:15px;
+    font-weight:700;
+    color:var(--dark);
+}
+
+/* FOOTER NOTE */
+.footer-note{
+    text-align:center;
+    padding-bottom:30px;
+    font-weight:600;
+    color:var(--muted);
+}
+
+/* ===== EXTRA CONTAINER ===== */
+.extra-container{
+    width:100%;
+    max-width:1200px;
+    background:#ffffff;
+    margin-top:40px;
+    border-radius:28px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.12);
+    padding:60px;
+}
+
+.extra-container h2{
+    font-size:36px;
+    font-weight:800;
+    color:var(--dark);
+    margin-bottom:20px;
+}
+
+.extra-container p{
+    font-size:18px;
+    color:var(--muted);
+    line-height:1.7;
+    max-width:900px;
+}
+
+/* POINTS */
+.points{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:25px;
+    margin-top:40px;
+}
+
+.point-card{
+    background:#fafafa;
+    border-radius:20px;
+    padding:30px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.06);
+}
+
+.point-card h4{
+    font-size:18px;
+    font-weight:800;
+    color:var(--dark);
+    margin-bottom:10px;
+}
+
+.point-card p{
+    font-size:15px;
+    color:var(--muted);
+}
+
+/* STATS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:25px;
+    margin-top:50px;
+}
+
+.stat-box{
+    background:#fafafa;
+    border-radius:18px;
+    padding:30px;
+    text-align:center;
+}
+
+.stat-box h3{
+    font-size:32px;
+    color:var(--red);
+    font-weight:800;
+}
+
+.stat-box span{
+    margin-top:8px;
+    display:block;
+    font-weight:600;
+    color:var(--dark);
+}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+    .hero{
+        flex-direction:column;
+        text-align:center;
+    }
+    .features,.points,.stats{
+        grid-template-columns:1fr 1fr;
+    }
+    nav{display:none;}
+}
+
+@media(max-width:600px){
+    .features,.points,.stats{
+        grid-template-columns:1fr;
+    }
+    .hero-text h1{font-size:34px;}
+}
+</style>
+{% endblock %}
+</head>
+
+<body>
+
+<!-- MAIN HERO CONTAINER -->
+<div class="container">
+
+<header>
+    <div class="logo"> LifeFlow</div>
+    <nav>
+        <a href="{% url 'landing' %}" >Home</a>
+        <a href="{% url 'about' %}">About Us</a>
+        <a href="{% url 'gallery' %}">Gallery</a>
+        <a href="{% url 'contact' %}">Contact</a>
+        <button class="btn-try"><a href="{% url 'welcome' %}" class="btn-hero">Get Started</a></button>
+    </nav>
+</header>
+{% block content %}
+<section class="hero">
+    <div class="hero-text">
+        <h1>
+            LifeFlow: Smart Blood<br>
+            Donation Management<br>
+            Software
+        </h1>
+        <p>
+            Streamline the blood donation process, connect donors with hospitals,
+            and save lives with our easy-to-use platform.
+        </p>
+       <a href="{% url 'welcome' %}" class="btn-hero">Get Started</a>
+
+
+    </div>
+
+    <div class="hero-image">
+        <img src="{% static 'assets/img/img3.png' %}" alt="Blood Donation Illustration">
+    </div>
+</section>
+
+<section class="features">
+    <div class="feature-card"><div class="feature-icon">💧</div><div class="feature-text">Donor<br>Management</div></div>
+    <div class="feature-card"><div class="feature-icon">🏥</div><div class="feature-text">Hospital<br>Requests</div></div>
+    <div class="feature-card"><div class="feature-icon">📍</div><div class="feature-text">Location Based<br>Matching</div></div>
+    <div class="feature-card"><div class="feature-icon">⏰</div><div class="feature-text">Emergency<br>Alerts</div></div>
+</section>
+
+<div class="footer-note">
+    Saving lives through technology ❤️
+</div>
+
+</div>
+
+<!-- EXTRA INFO CONTAINER -->
+<div class="extra-container">
+
+<h2>Why LifeFlow?</h2>
+<p>
+LifeFlow revolutionizes blood donation management by creating a seamless
+connection between donors and healthcare facilities. It reduces delays,
+prevents blood wastage, and improves emergency response time.
+</p>
+
+<div class="points">
+    <div class="point-card">
+        <h4>🩸 Smart Donor Management</h4>
+        <p>Centralized donor profiles with history and eligibility tracking.</p>
+    </div>
+
+    <div class="point-card">
+        <h4>🏥 Hospital Request System</h4>
+        <p>Instant blood requests with priority-based handling.</p>
+    </div>
+
+    <div class="point-card">
+        <h4>📍 Location-Based Matching</h4>
+        <p>Nearby donor matching for faster emergency response.</p>
+    </div>
+
+    <div class="point-card">
+        <h4>⏰ Emergency Alerts</h4>
+        <p>Automated alerts sent to eligible donors instantly.</p>
+    </div>
+
+    <div class="point-card">
+        <h4>📊 Reduced Wastage</h4>
+        <p>Smart inventory control to prevent blood expiration.</p>
+    </div>
+
+    <div class="point-card">
+        <h4>🔐 Secure Platform</h4>
+        <p>Hospital-grade security with role-based access.</p>
+    </div>
+</div>
+
+<div class="stats">
+    <div class="stat-box"><h3>4.5M</h3><span>Lives Impacted</span></div>
+    <div class="stat-box"><h3>12,000+</h3><span>Partner Hospitals</span></div>
+    <div class="stat-box"><h3>850K</h3><span>Active Donors</span></div>
+    <div class="stat-box"><h3>98%</h3><span>Fulfillment Rate</span></div>
+</div>
+
+</div>
+{% endblock %}
+</body>
+</html>

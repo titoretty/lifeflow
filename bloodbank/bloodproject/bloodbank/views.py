@@ -96,79 +96,8 @@ def register(request):
         return redirect('user_login')
 
     return render(request, 'user/user_register.html')
-# def user_login(request):
-#     if request.method == "POST":
-#         email = request.POST.get("email").strip()
-#         password = request.POST.get("password")
-#
-#         try:
-#             user = user_registerdb.objects.get(email=email)
-#             if check_password(password, user.password):
-#                 # Store user ID in session
-#                 request.session['user_id'] = user.id
-#                 request.session['user_name'] = user.full_name
-#                 return redirect("slogan")  # your page after login
-#             else:
-#                 messages.error(request, "Invalid password")
-#         except user_registerdb.DoesNotExist:
-#             messages.error(request, "User not found. Please register.")
-#
-#     return render(request, "user/user_login.html")
 
-# def user_login(request):
-#     if request.method == "POST":
-#         email = request.POST.get("email").strip()
-#         password = request.POST.get("password")
-#
-#         try:
-#             user = user_registerdb.objects.get(email=email)
-#
-#             if check_password(password, user.password):
-#                 request.session['user_id'] = user.id
-#                 request.session['user_name'] = user.full_name
-#
-#                 # 🔥 CORE LOGIC
-#                 if request.session.get('new_user'):
-#                     del request.session['new_user']
-#                     return redirect("slogan")   # ✅ only first time
-#                 else:
-#                     return redirect("index")     # ❌ no slogan
-#
-#             else:
-#                 messages.error(request, "Invalid password")
-#
-#         except user_registerdb.DoesNotExist:
-#             messages.error(request, "User not found. Please register.")
-#
-#     return render(request, "user/user_login.html")
-# def user_login(request):
-#     if request.method == "POST":
-#         email = request.POST.get("email").strip()
-#         password = request.POST.get("password")
-#
-#         try:
-#             user = user_registerdb.objects.get(email=email)
-#
-#             if check_password(password, user.password):
-#
-#                 request.session.flush()   # 🔥 clear old user FIRST
-#
-#                 request.session['user_id'] = user.id
-#                 request.session['user_name'] = user.full_name
-#
-#                 if request.session.get('new_user'):
-#                     return redirect("slogan")
-#                 else:
-#                     return redirect("index")
-#
-#             else:
-#                 messages.error(request, "Invalid password")
-#
-#         except user_registerdb.DoesNotExist:
-#             messages.error(request, "User not found. Please register.")
-#
-#     return render(request, "user/user_login.html")
-#
+
 def user_login(request):
     if request.method == "POST":
         email = request.POST.get("email").strip()
@@ -305,22 +234,7 @@ def hos_register(request):
 
     return render(request, 'hospital/hos_register.html')
 
-# def demo(request):
-#     return render(request,'hospital/demo.html')
-# def hos_login(request):
-#     if request.method == "POST":
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
-#
-#         user = authenticate(request, username=username, password=password)
-#
-#         if user is not None:
-#             login(request, user)
-#             return redirect('hos_index.css')   # change to dashboard if needed
-#         else:
-#             messages.error(request, "Invalid username or password")
-#
-#     return render(request, 'hospital/hos_login.html')
+
 def hos_login(request):
     if request.method == "POST":
         username = request.POST.get('username')
@@ -357,11 +271,7 @@ NEARBY_DISTRICTS = {
     "Thrissur": ["Ernakulam", "Palakkad"],
     "Kottayam": ["Pathanamthitta", "Alappuzha"],
 }
-# def donate(request):
-#     if not request.session.get('user_id'):
-#         return redirect('user_login')
-#
-#     return render(request, 'user/donate.html')
+
 def donate(request):
     # 🔐 Login check
     user_id = request.session.get('user_id')
@@ -411,83 +321,6 @@ def hospital_list(request):
         "selected_district": district_input,
         "search_method": method
     })
-#
-# def Donate_blood(request, hospital_id):
-#     hospital = get_object_or_404(Hospital, id=hospital_id)
-#
-#     user_id = request.session.get('user_id')
-#     if not user_id:
-#         messages.error(request, "Please login first")
-#         return redirect('user_login')
-#
-#     user = get_object_or_404(user_registerdb, id=user_id)
-#
-#     # 🔥 6 MONTH RULE
-#     can_donate = True
-#     next_allowed_date = None
-#     if user.last_donation_date:
-#         next_allowed_date = user.last_donation_date + relativedelta(months=6)
-#         if date.today() < next_allowed_date:
-#             can_donate = False
-#
-#     if request.method == "POST":
-#         if not can_donate:
-#             messages.error(
-#                 request,
-#                 f"You can donate blood only after {next_allowed_date.strftime('%d-%m-%Y')}"
-#             )
-#             return redirect('index')
-#
-#         try:
-#             age = int(request.POST.get("age"))
-#             weight = int(request.POST.get("weight"))
-#         except:
-#             messages.error(request, "Invalid input")
-#             return redirect('Donate_blood', hospital_id=hospital.id)
-#
-#         gender = request.POST.get("gender")
-#         district = request.POST.get("district")
-#         address = request.POST.get("address")
-#         medical_condition = request.POST.get("medical_condition")
-#         medical_info = request.POST.get("medical_info", "")
-#
-#         # Minimum weight check
-#         if weight < 45:
-#             messages.error(request, "Minimum weight required is 45 kg")
-#             return redirect('Donate_blood', hospital_id=hospital.id)
-#
-#         # Save request
-#         BloodDonate.objects.create(
-#             hospital=hospital,
-#             user=user,
-#             user_name=user.full_name,
-#             email=user.email,
-#             phone=user.phone,
-#             blood_group=user.blood_group,
-#             age=age,
-#             gender=gender,
-#             weight=weight,
-#             district=district,
-#             address=address,
-#             medical_condition=medical_condition,
-#             medical_info=medical_info,
-#             status="PENDING"
-#         )
-#
-#         messages.success(
-#             request,
-#             "Donation request submitted. Hospital will schedule date & time."
-#         )
-#         return redirect('index')
-#
-#     # Render template with eligibility info
-#     return render(request, "user/Donate_blood.html", {
-#         "hospital": hospital,
-#         "user": user,
-#         "can_donate": can_donate,
-#         "next_allowed_date": next_allowed_date
-#     })
-
 
 # Time slots round-robin
 TIME_SLOTS = ['Morning', 'Afternoon', 'Evening']
@@ -510,67 +343,7 @@ def assign_time_slot(donation):
     donation.time_slot = TIME_SLOTS[same_day_count % len(TIME_SLOTS)]
     donation.save()
 
-# Hospital dashboard view
-# def donate_request(request):
-#     # Check hospital login
-#     hospital_id = request.session.get('hospital_id')
-#     if not hospital_id:
-#         messages.error(request, "Please login first")
-#         return redirect('hos_login')
-#
-#     # Fetch hospital
-#     hospital = get_object_or_404(Hospital, id=hospital_id)
-#
-#     # Fetch pending blood donation requests for this hospital
-#     pending_requests = BloodDonate.objects.filter(
-#         hospital=hospital,
-#         status='PENDING'
-#     ).order_by('-created_at')  # latest requests first
-#
-#     return render(request, 'hospital/donate_request.html', {
-#         'hospital': hospital,
-#         'pending_requests': pending_requests
-#     })
-#
-#
-# # Approve donation request
-# def approve_request(request, donation_id):
-#     donation = get_object_or_404(BloodDonate, id=donation_id)
-#
-#     # Only allow if the logged-in hospital matches
-#     hospital_id = request.session.get('hospital_id')
-#     if donation.hospital.id != hospital_id:
-#         messages.error(request, "You cannot approve this request")
-#         return redirect('donate_request')
-#
-#     donation.status = 'APPROVED'
-#     assign_time_slot(donation)
-#
-#     messages.success(
-#         request,
-#         f"Donation request by {donation.user_name} approved. Time Slot: {donation.time_slot}"
-#     )
-#     return redirect('donate_request')
-#
-#
-# # Reject donation request
-# def reject_request(request, donation_id):
-#     donation = get_object_or_404(BloodDonate, id=donation_id)
-#
-#     # Only allow if the logged-in hospital matches
-#     hospital_id = request.session.get('hospital_id')
-#     if donation.hospital.id != hospital_id:
-#         messages.error(request, "You cannot reject this request")
-#         return redirect('donate_request')
-#
-#     donation.status = 'REJECTED'
-#     donation.save()
-#
-#     messages.warning(
-#         request,
-#         f"Donation request by {donation.user_name} rejected."
-#     )
-#     return redirect('donate_request')
+
 
 
 TIME_SLOTS = ['Morning', 'Afternoon', 'Evening']
@@ -948,235 +721,8 @@ TIME_SLOTS = [
     "11:00 - 12:00",
     "14:00 - 15:00",
 ]
-# def notifications(request):
-#     user_id = request.session.get('user_id')  # your custom session
-#     if not user_id:
-#         messages.error(request, "Please login first")
-#         return redirect('user_login')
-#
-#     # Get the actual user_registerdb instance
-#     user = get_object_or_404(user_registerdb, id=user_id)
-#
-#     # Fetch notifications
-#     donate_notifs = Notification.objects.filter(user=user, notif_type='donate').order_by('-created_at')
-#     request_notifs = Notification.objects.filter(user=user, notif_type='request').order_by('-created_at')
-#
-#     return render(request, 'user/notifications.html', {
-#         'donate_notifs': donate_notifs,
-#         'request_notifs': request_notifs
-#     })
-#
-#
-#
-# def approve_receiver_request(request, request_id):
-#     req = get_object_or_404(BloodRequest, id=request_id)
-#
-#     if request.method == "POST":
-#         req.assigned_date = request.POST.get('assigned_date')
-#         req.time_slot = request.POST.get('time_slot')
-#         req.status = 'APPROVED'
-#         req.save()
-#
-#         Notification.objects.create(
-#             user=req.user,
-#             message=f"""Your blood request has been APPROVED ✅
-#                     🏥 Hospital: {req.hospital.hospital_name}
-#                     📅 Date: {req.assigned_date}
-#                     ⏰ Time: {req.time_slot}
-#                     🩸 Units: {req.units}"""
-#         )
-#         return redirect('hospital_dashboard')
-#
-#     return render(request, 'hospital/approve_receiver.html', {
-#         'req': req,
-#         'time_slots': TIME_SLOTS,
-#         'today': date.today()
-#     })
-# def reject_receiver_request(request, request_id):
-#     req = get_object_or_404(BloodRequest, id=request_id)
-#     req.status = 'REJECTED'
-#     req.save()
-#     Notification.objects.create(
-#         user=req.user,
-#         message=f"""Your blood request has been REJECTED ❌
-#                 🏥 Hospital: {req.hospital.hospital_name}
-#                 Reason: Insufficient stock"""
-#     )
-#     return redirect('hospital_dashboard')
-#
-#
-# def receiver_history(request):
-#     if not request.session.get('user_id'):
-#         return redirect('user_login')
-#
-#     user = user_registerdb.objects.get(id=request.session['user_id'])
-#
-#     history = BloodRequest.objects.filter(user=user).order_by('-created_at')
-#
-#     return render(request, 'user/receiver/history.html', {
-#         'history': history
-#     })
-#
-# def receiver_requests(request):
-#     if not request.session.get('hospital_id'):
-#         return redirect('hos_login')
-#
-#     hospital = Hospital.objects.get(id=request.session['hospital_id'])
-#
-#     requests = BloodRequest.objects.filter(
-#         hospital=hospital
-#     ).order_by('-created_at')
-#
-#     return render(request, 'hospital/receiver_requests.html', {
-#         'requests': requests
-#     })
-
 
 TIME_SLOTS = ["9:00 AM - 11:00 AM", "11:00 AM - 1:00 PM", "2:00 PM - 4:00 PM", "4:00 PM - 6:00 PM"]
-
-# ---------------- Notifications Page ----------------
-# def notifications(request):
-#     user_id = request.session.get('user_id')
-#     if not user_id:
-#         messages.error(request, "Please login first")
-#         return redirect('user_login')
-#
-#     user = get_object_or_404(user_registerdb, id=user_id)
-#
-#     donate_notifs = Notification.objects.filter(user=user, notif_type='donate').order_by('-created_at')
-#     request_notifs = Notification.objects.filter(user=user, notif_type='request').order_by('-created_at')
-#
-#     return render(request, 'user/notifications.html', {
-#         'donate_notifs': donate_notifs,
-#         'request_notifs': request_notifs
-#     })
-#
-#
-# # ---------------- Approve Receiver Request ----------------
-# def approve_receiver_request(request, request_id):
-#     req = get_object_or_404(BloodRequest, id=request_id)
-#
-#     if request.method == "POST":
-#         req.assigned_date = request.POST.get('assigned_date')
-#         req.time_slot = request.POST.get('time_slot')
-#         req.status = 'APPROVED'
-#         req.save()
-#
-#         # Ensure we get the correct user_registerdb instance
-#         user_instance = get_object_or_404(user_registerdb, id=req.user.id)
-#
-#         Notification.objects.create(
-#             user=user_instance,
-#             message=f"""Your blood request has been APPROVED ✅
-# 🏥 Hospital: {req.hospital.hospital_name}
-# 📅 Date: {req.assigned_date}
-# ⏰ Time: {req.time_slot}
-# 🩸 Units: {req.units}""",
-#             notif_type='request'
-#         )
-#         return redirect('hospital_dashboard')
-# # ---------------- Reject Receiver Request ----------------
-# def reject_receiver_request(request, request_id):
-#     req = get_object_or_404(BloodRequest, id=request_id)
-#     req.status = 'REJECTED'
-#     req.save()
-#
-#     # Create notification with correct notif_type
-#     Notification.objects.create(
-#         user=req.user,
-#         message=f"""Your blood request has been REJECTED ❌
-# 🏥 Hospital: {req.hospital.hospital_name}
-# Reason: Insufficient stock""",
-#         notif_type='request'
-#     )
-#     return redirect('hospital_dashboard')
-#
-# # ---------------- Receiver History ----------------
-# def receiver_history(request):
-#     if not request.session.get('user_id'):
-#         return redirect('user_login')
-#
-#     user = get_object_or_404(user_registerdb, id=request.session['user_id'])
-#
-#     history = BloodRequest.objects.filter(user=user).order_by('-created_at')
-#
-#     return render(request, 'user/receiver/history.html', {
-#         'history': history
-#     })
-#
-# # ---------------- Hospital Receiver Requests ----------------
-# def receiver_requests(request):
-#     if not request.session.get('hospital_id'):
-#         return redirect('hos_login')
-#
-#     hospital = get_object_or_404(Hospital, id=request.session['hospital_id'])
-#
-#     requests = BloodRequest.objects.filter(
-#         hospital=hospital
-#     ).order_by('-created_at')
-#
-#     return render(request, 'hospital/receiver_requests.html', {
-#         'requests': requests
-#     })
-#
-# def approve_request(request, donation_id):
-#     donation = get_object_or_404(BloodDonate, id=donation_id)
-#
-#     if request.method == "POST":
-#         donation_date = request.POST.get("donation_date")
-#         time_slot = request.POST.get("time_slot")
-#
-#         if donation_date and time_slot:
-#             donation.donation_date = donation_date
-#             donation.time_slot = time_slot
-#             donation.status = "APPROVED"
-#             donation.save()
-#             messages.success(request, f"Donation approved for {donation.donation_date} at {donation.time_slot}")
-#             # ✅ Notification for user
-#             Notification.objects.create(
-#                 user=donation.user,
-#                 message=f"""
-#             Your blood donation request has been APPROVED ✅
-#
-#             📍 Hospital: {donation.hospital.hospital_name}
-#             📅 Date: {donation.donation_date}
-#             ⏰ Time Slot: {donation.time_slot}
-#
-#             Thank you for donating blood!
-#             """
-#             )
-#             return redirect('donate_request')
-#         else:
-#             messages.error(request, "Please select date and time slot")
-#
-#     today = date.today()  # <-- add this
-#     return render(request, 'hospital/receiver_requests.html', {
-#         'donation': donation,
-#         'time_slots': TIME_SLOTS,
-#         'today': today,  # <-- pass today to template
-#     })
-#
-# # Reject request
-# def reject_request(request, donation_id):
-#     donation = get_object_or_404(BloodDonate, id=donation_id)
-#
-#     donation.status = 'REJECTED'
-#     donation.save()
-#
-#     Notification.objects.create(
-#         user=donation.user,
-#         message=f"""
-# Your blood donation request has been REJECTED ❌
-#
-# 📍 Hospital: {donation.hospital.hospital_name}
-#
-# Please contact hospital for more details.
-# """
-#     )
-#
-#     messages.warning(request, "Donation rejected & user notified")
-#     return redirect('donate_request')
-
 
 
 # ---------------- Notifications ----------------
@@ -1882,3 +1428,17 @@ def admin_hospitals(request):
 
     hospitals = Hospital.objects.all()
     return render(request, "admin/admin_hospitals.html", {'hospitals': hospitals})
+
+def landing(request):
+    return render(request, 'landing.html')
+
+def contact(request):
+    return render(request, 'contact.html')
+def gallery(request):
+    return render(request, 'gallery.html')
+
+def camp_announce(request):
+    camps = BloodCamp.objects.all().order_by('-camp_date')
+    return render(request, 'user/camp_announce.html', {
+        'camps': camps
+    })

@@ -1,0 +1,62 @@
+{% extends 'header.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+.camp-card{
+    background:#fff;
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    position:relative;
+}
+.badge{
+    position:absolute;
+    right:20px;
+    top:20px;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+.ONGOING{
+    background:#e74c3c;
+    color:#fff;
+}
+.COMPLETED{
+    background:#2ecc71;
+    color:#fff;
+}
+</style>
+
+<h2>🩸 Blood Camp Announcements</h2>
+
+{% for camp in camps %}
+<div class="camp-card">
+
+    <span class="badge {{ camp.status }}">
+        {{ camp.status }}
+    </span>
+
+    <h3>{{ camp.title }}</h3>
+    <p><b>Organizer:</b> {{ camp.organizer_name }}</p>
+    <p>{{ camp.description }}</p>
+
+    <p>
+        📍 {{ camp.location }} <br>
+        📅 {{ camp.camp_date }} <br>
+        ⏰ {{ camp.start_time }} - {{ camp.end_time }}
+    </p>
+
+    {% if camp.status == 'COMPLETED' %}
+        <p><b>Donors:</b> {{ camp.donors_count }}</p>
+        <p><b>Units Collected:</b> {{ camp.units_collected }}</p>
+    {% endif %}
+
+</div>
+{% empty %}
+<p>No camps announced yet</p>
+{% endfor %}
+
+{% endblock %}
